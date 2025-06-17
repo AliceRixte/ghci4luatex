@@ -69,7 +69,8 @@ make latex
                 "lhs=%DOCFILE%"
             ],
             "env": {}
-        },
+        }
+    ],
 ```
 
 

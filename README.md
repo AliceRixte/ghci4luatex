@@ -33,7 +33,9 @@ import Text.LaTeX
 \end{ghci}
 
 \hask{printTex (section "A section using HaTeX")}
-``` 
+```
+
+* Use any package you need by adding it to `package.yaml` (if the package is on Stackage) or to `stack.yaml` if it is your own package or only on Hackage.
 
 
 ## Install

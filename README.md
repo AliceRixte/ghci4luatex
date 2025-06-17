@@ -29,10 +29,11 @@ The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 stack install lhs2tex
 ```
 
-2. Clone this repository :
+1. Clone this repository :
 
 ```
 git clone https://github.com/AliceRixte/ghci4luatex.git
+cd ghci4luatex
 ```
 
 3. Run the ghci server :

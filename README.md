@@ -20,6 +20,21 @@ y = 5
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 ```
 
+* You can use `HaTeX` :
+
+```latex
+
+\begin{ghci}
+:set -XOverloadedStrings
+\end{ghci}
+
+\begin{ghci}
+import Text.LaTeX
+\end{ghci}
+
+\hask{printTex (section "A section using HaTeX")}
+``` 
+
 
 ## Install
 

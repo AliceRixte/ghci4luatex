@@ -21,7 +21,7 @@ The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 ```
 
 
-## Quick start
+## Install
 
 1. Install `haskell`, `stack` and `lhs2tex` 
 

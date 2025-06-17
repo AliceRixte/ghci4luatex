@@ -40,7 +40,7 @@ make run
 
 4. Edit `main.tex`
   
-5. Compile to pdf :
+5. Open an other shell and compile to pdf :
 
 ```
 make latex

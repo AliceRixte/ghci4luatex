@@ -35,5 +35,13 @@ stack install lhs2tex
 git clone https://github.com/AliceRixte/ghci4luatex.git
 ```
 
-3. Edit `main.tex`
+3. Run the ghci server :
+
+```
+stack exec ghci-server
+```
+
+4. Edit `main.tex`
+
+
 

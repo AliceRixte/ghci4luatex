@@ -46,5 +46,33 @@ make run
 make latex
 ```
 
+## Workflow in Visual Studio Code with LaTeX workshop
+
+1. Install the [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) extension.
+2. In `settings.json` , add the following
+```json
+"latex-workshop.latex.recipes": [
+        {
+            "name": "ghci4luatex",
+            "tools": [
+                "mklatex"
+            ]
+        }
+    ],
+"latex-workshop.latex.outDir": "./build/",
+"latex-workshop.latex.tools": [
+        {
+            "name": "mklatex",
+            "command": "make",
+            "args": [
+                "latex",
+                "lhs=%DOCFILE%"
+            ],
+            "env": {}
+        },
+```
+
+
+
 
 

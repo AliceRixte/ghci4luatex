@@ -1,0 +1,39 @@
+
+\documentclass{article}
+
+\usepackage{listings}
+\usepackage{ghci}
+
+\usepackage{tabularx}
+
+%include polycode.fmt
+
+\begin{ghci}
+:set -XOverloadedStrings
+\end{ghci}
+
+\begin{ghci}
+import Text.LaTeX
+\end{ghci}
+
+\begin{document}
+
+\hask{printTex (section "A section using HaTeX")}
+
+\section{Combining lhs2TeX and ghci4luatex}
+
+Let |sqr| be the square function:
+
+\begin{code}
+sqr n = n * n
+\end{code}
+
+\begin{ghci}
+  sqr :: Num a => a -> a
+  sqr n = n * n
+\end{ghci}
+
+Then  |sqr 3| is equal to \hask{sqr 3 :: Int}.
+
+
+\end{document}

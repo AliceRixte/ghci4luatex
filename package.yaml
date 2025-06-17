@@ -1,0 +1,46 @@
+name:                ghci4luatex
+version:             0.0.0
+github:              "AliceRixte/ghci4luatex"
+license:             BSD3
+author:              "Alice Rixte"
+maintainer:          "alice.rixte@u-bordeaux.fr"
+copyright:           "Alice Rixte 2024"
+
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            media
+
+description:         Please see the README on GitHub at <https://github.com/AliceRixte/pandia/blob/main/ghci4luatex#readme>
+
+
+dependencies:
+- base >= 4.18 && < 5
+- process
+- network-simple
+- stm
+- bytestring
+- aeson
+- HaTeX
+- text
+
+ghc-options:
+- -Wall
+
+
+library:
+  source-dirs: src
+
+executables:
+  ghci-server:
+    main:                ghci-server.hs
+    source-dirs:         app
+    dependencies:
+    - ghci4luatex
+
+
+    ghc-options:
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -threaded
+

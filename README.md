@@ -23,13 +23,9 @@ The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 
 ## Quick start
 
-1. Install `lhs2tex` :
+1. Install `haskell`, `stack` and `lhs2tex` 
 
-``` shell
-stack install lhs2tex
-```
-
-1. Clone this repository :
+2. Clone this repository :
 
 ```
 git clone https://github.com/AliceRixte/ghci4luatex.git

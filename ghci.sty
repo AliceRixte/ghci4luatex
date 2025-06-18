@@ -56,7 +56,6 @@ end
 
   function startrecording(envname)
     mybuf = ""
-    luatexbase.module_warning("ghci" , "GHCi BEGIN")
     current_end_marker = "\\end{" .. envname .. "}"
     luatexbase.add_to_callback('process_input_buffer', readbuf, 'readbuf')
   end

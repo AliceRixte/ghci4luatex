@@ -1,0 +1,73 @@
+
+\documentclass{article}
+
+\usepackage{listings}
+\usepackage{ghci}
+
+\usepackage{tabularx}
+
+
+%include polycode.fmt
+
+%format ghci4luatex = "\text{GHCi for Lua\TeX}"
+%format luatex = "\text{Lua\TeX}"
+
+\begin{ghci}
+:set -XOverloadedStrings
+\end{ghci}
+
+\begin{ghci}
+import Text.LaTeX
+\end{ghci}
+
+
+\begin{ghci}
+x :: Int
+x = 4
+
+y :: Int
+y = 5
+\end{ghci}
+
+\title{|ghci4luatex| \\ \vspace{0.4em}
+  \large A ghci session in |luatex|}
+
+\author{Alice Rixte}
+
+\begin{document}
+
+\maketitle
+
+\section{Presentation}
+
+\section{Getting started}
+
+\section{The GHCi server}
+
+\section{The GHCi package for |luatex|}
+
+\section{Tips and tricks}
+
+\hask{printTex (section "A section using HaTeX")}
+
+The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
+
+\section{Combining lhs2TeX and ghci4luatex}
+
+
+
+Let |sqr| be the square function:
+
+\begin{code}
+sqr n = n * n
+\end{code}
+
+\begin{ghci}
+  sqr :: Num a => a -> a
+  sqr n = n * n
+\end{ghci}
+
+Then  |sqr 3| is equal to \hask{sqr 3 :: Int}.
+
+
+\end{document}

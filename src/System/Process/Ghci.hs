@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
 module System.Process.Ghci where
 
@@ -44,24 +45,26 @@ data Ghci = Ghci
 --
 startGhci :: String -> [String] -> IO (Ghci, GhciResult)
 startGhci cmd args = do
-  (Just hin, Just hout , Just herr , hp) <-
-    createProcess (proc cmd args) { std_in = CreatePipe
+  chans <- createProcess (proc cmd args) { std_in = CreatePipe
                                   , std_err = CreatePipe
                                   , std_out = CreatePipe
                                   }
-  verr <- newEmptyTMVarIO
-  vout <- newEmptyTMVarIO
+  case chans of
+    (Just hin, Just hout , Just herr , hp) -> do
+      verr <- newEmptyTMVarIO
+      vout <- newEmptyTMVarIO
 
-  errId  <-forkIO $ listenHandle verr herr
-  outId <-forkIO $ listenHandle vout hout
+      errId  <-forkIO $ listenHandle verr herr
+      outId <-forkIO $ listenHandle vout hout
 
-  let g = Ghci hin verr vout hp errId outId
+      let g = Ghci hin verr vout hp errId outId
 
-  threadDelay 2000000 -- wait 200 ms to make sure GHCi is ready to listen
+      threadDelay 2000000 -- wait 200 ms to make sure GHCi is ready to listen
 
-  res <- waitGhciResult g
+      res <- waitGhciResult g
 
-  return (g, res)
+      return (g, res)
+    _ -> error "Error : Ghci command failed."
 
 -- | Listen to a handle by putting lines into a TMVar
 --

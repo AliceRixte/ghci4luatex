@@ -23,6 +23,7 @@ dependencies:
 - aeson
 - HaTeX
 - text
+- cmdargs
 
 ghc-options:
 - -Wall

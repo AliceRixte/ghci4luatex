@@ -32,8 +32,8 @@ library:
   source-dirs: src
 
 executables:
-  ghci-server:
-    main:                ghci-server.hs
+  ghci4luatex:
+    main:                ghci4luatex.hs
     source-dirs:         app
     dependencies:
     - ghci4luatex

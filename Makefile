@@ -6,7 +6,7 @@ current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
 
 pkg = $(current_dir)
 trg = lib
-exe = ghci-server
+exe = ghci4luatex
 tst = $(pkg)-test
 bch = $(pkg)-bench
 

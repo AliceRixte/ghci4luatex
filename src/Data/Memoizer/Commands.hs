@@ -31,7 +31,6 @@ lookup a (CmdMemoizer m i modif) =
 restartSession :: CmdMemoizer a b -> CmdMemoizer a b
 restartSession m = m {currentIndex = 0, foundModif = False}
 
-
 storeResult :: a -> b -> CmdMemoizer a b -> CmdMemoizer a b
 storeResult a b (CmdMemoizer m i _) =
   CmdMemoizer (Map.insert i (a,b) m) (i+1) True

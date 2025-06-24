@@ -26,6 +26,7 @@ y = 5
 
 \begin{document}
 
+
 \hask{printTex (section "A section using HaTeX")}
 
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
@@ -40,7 +41,7 @@ sqr n = n * n
 
 \begin{ghci}
   sqr :: Num a => a -> a
-  sqr n = n
+  sqr n = n * n
 \end{ghci}
 
 Then  |sqr 3| is equal to \hask{sqr 3 :: Int}.

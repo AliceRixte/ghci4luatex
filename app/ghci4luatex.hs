@@ -113,7 +113,7 @@ handleClient v sock ghci memo =
                     Nothing -> do
                       when (v >= Normal) $ printGhciMsg s
                       res <- sendGhciCmd v ghci (s ++ "\n")
-                      putChar '\n'
+                      when (v >= Normal) $ putStrLn ""
                       let json = encode res <> "\n"
                       modifyIORef memo (Memo.storeResult s json)
                       return json
@@ -121,12 +121,14 @@ handleClient v sock ghci memo =
                       when (v >= Loud) $ do
                         printGhciMsg s
                         putStrLn "Memoized !"
+                        putStrLn ""
                       modifyIORef memo Memo.nextCmd
                       return json
                   sendLazy sock json
                 Just (ServerMsg (NewSession s)) -> do
                   modifyIORef memo (Memo.newSession s)
-                  when (v >= Normal) $ putStrLn $ "NewSession : " ++ show s
+                  when (v >= Normal) $ do
+                    putStrLn $ "--- NewSession : " ++ show s  ++ "---\n"
 
               loop
             Nothing -> when (v >= Loud) $ do

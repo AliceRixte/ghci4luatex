@@ -4,6 +4,7 @@
 
 module Main (main) where
 
+import Control.Monad
 import GHC.Generics
 import System.IO
 import Data.IORef
@@ -12,7 +13,6 @@ import Data.IORef
 
 import Network.Simple.TCP
 
-import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy as BL
 
 import System.Console.CmdArgs
@@ -54,86 +54,81 @@ cmdArg =  Ghci4luatex
   , host = "127.0.0.1" &= help "Host address (defaults to localhost)"
   , port = "54123" &= help "Port (defaults to 54123)"
   }
+  &= verbosity
   &= summary "ghci4luatex v0.1, (C) Alice Rixte"
-
 
 main :: IO ()
 main = do
   Ghci4luatex str addr prt <- cmdArgs cmdArg
   case words str of
-    [] -> putStrLn "Invalid ghci command."
+    [] -> putStrLn "Error : Empty ghci command."
     cmd : ghciArgs -> do
-      putChar '\n'
-      putStrLn "(-: Starting GHCi Server :-)"
-      putChar '\n'
-      (ghci, _) <- startGhci cmd ghciArgs
-      putChar '\n'
-      putStrLn "(-: GHCi server is ready :-)"
-      putChar '\n'
+      v <- getVerbosity
+      when (v >= Normal) $ do
+        putChar '\n'
+        putStrLn "(-: Starting GHCi Server :-)"
+        putChar '\n'
+
+      (ghci, _) <- startGhci v cmd ghciArgs
+
+      when (v >= Normal) $ do
+        putChar '\n'
+        putStrLn "(-: GHCi server is ready :-)"
+        putChar '\n'
 
       memo <- newIORef (Memo.initSession "main" :: GhciMemo)
       serve (Host addr) prt $ \(sock, remoteAddr) -> do
-        putStrLn $ "New connection of " ++ show remoteAddr
-        handleClient sock ghci memo
+        when (v > Normal) $ putStrLn $ "New connection of " ++ show remoteAddr
+        handleClient v sock ghci memo
 
 printGhciMsg :: String -> IO ()
-printGhciMsg s =
-  case lines s of
+printGhciMsg str =
+  case lines str of
     [] -> return ()
+    -- [s] -> when (s /= "") $ putStrLn $ "ghci| " ++ s
     (x:q) -> do
       putStrLn $ "ghci> " ++ x
       mapM_ (putStrLn . ("ghci| " ++)) q
 
--- execGhciMsg :: Ghci -> IORef GhciMemo -> String -> IO BL.ByteString
--- execGhciMsg ghci memo s = do
---   m <-readIORef memo
-
-
---   res <- sendGhciCmd ghci s
---   print res
---   return  (encode res <> "\n")
-
-handleClient :: Socket ->  Ghci -> IORef GhciMemo ->  IO ()
-handleClient sock ghci memo =
+handleClient :: Verbosity -> Socket ->  Ghci -> IORef GhciMemo ->  IO ()
+handleClient v sock ghci memo =
     loop
     where
       loop = do
         msg <- recv sock 1024
         case msg of
             Just bs -> do
-              putStrLn $ show msg
-              putChar '\n'
-              if B.null bs then
-                return ()
-              else do
-                case decodeStrict bs :: Maybe Ghci4luatexMsg of
-                  Nothing ->
-                    let json = encode (GhciResult "" "ghci4luatex :: Error : Could not parse JSON message.")
-                    in do
-                      hPutStr stderr "Error : Could not parse JSON message."
-                      hPutStr stderr "\n"
-                      hFlush stderr
-                      sendLazy sock json
-                  Just (GhciMsg s) -> do
-                    printGhciMsg s
-                    m <-readIORef memo
-                    json <- case Memo.lookup s m of
-                      Nothing -> do
-                        res <- sendGhciCmd ghci s
-                        let json = encode res <> "\n"
-                        modifyIORef memo (Memo.storeResult s json)
-                        return json
-                      Just json -> do
+              case decodeStrict bs :: Maybe Ghci4luatexMsg of
+                Nothing ->
+                  let json = encode (GhciResult  "ghci4luatex :: Error : Could not parse JSON message." "")
+                  in do
+                    hPutStr stderr "Error : Could not parse JSON message."
+                    hPutStr stderr "\n"
+                    hFlush stderr
+                    sendLazy sock json
+                Just (GhciMsg s) -> do
+
+                  m <-readIORef memo
+                  json <- case Memo.lookup s m of
+                    Nothing -> do
+                      when (v >= Normal) $ printGhciMsg s
+                      res <- sendGhciCmd v ghci (s ++ "\n")
+                      putChar '\n'
+                      let json = encode res <> "\n"
+                      modifyIORef memo (Memo.storeResult s json)
+                      return json
+                    Just json -> do
+                      when (v >= Loud) $ do
+                        printGhciMsg s
                         putStrLn "Memoized !"
-                        modifyIORef memo Memo.nextCmd
-                        return json
+                      modifyIORef memo Memo.nextCmd
+                      return json
+                  sendLazy sock json
+                Just (ServerMsg (NewSession s)) -> do
+                  modifyIORef memo (Memo.newSession s)
+                  when (v >= Normal) $ putStrLn $ "NewSession : " ++ show s
 
-
-                    print json
-                    sendLazy sock json -- $ BL.pack(show res ++ "\n")
-                  Just (ServerMsg (NewSession s)) -> do
-                    modifyIORef memo (Memo.newSession s)
-                    putStrLn $ "NewSession : " ++ show s
-
-                loop
-            Nothing -> putStrLn "Connexion was closed"
+              loop
+            Nothing -> when (v >= Loud) $ do
+              putChar '\n'
+              putStrLn "Connexion was closed"

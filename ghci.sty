@@ -14,7 +14,6 @@
   client = socket.connect("\ghciserverhost", \ghciserverport)
 }
 
-
 \begin{luacode*}
 
 
@@ -35,7 +34,7 @@ serverMemoize("main")
 function ghciCmd(code)
   local msg = {
     tag = "GhciMsg",
-    contents = code .. "\n"
+    contents = code
   }
   return json.encode(msg)
 end

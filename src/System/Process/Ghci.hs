@@ -12,6 +12,8 @@ import System.IO
 import System.IO.Error
 import System.Process
 
+import System.Console.CmdArgs.Verbosity
+
 
 import Data.Aeson
 
@@ -42,8 +44,8 @@ data Ghci = Ghci
 --
 -- >>> (ghci, res) = startGhci "stack" ["ghci"]
 --
-startGhci :: String -> [String] -> IO (Ghci, GhciResult)
-startGhci cmd args = do
+startGhci :: Verbosity -> String -> [String] -> IO (Ghci, GhciResult)
+startGhci v cmd args = do
   chans <- createProcess (proc cmd args) { std_in = CreatePipe
                                   , std_err = CreatePipe
                                   , std_out = CreatePipe
@@ -60,7 +62,7 @@ startGhci cmd args = do
 
       threadDelay 2000000 -- wait 200 ms to make sure GHCi is ready to listen
 
-      res <- waitGhciResult g
+      res <- waitGhciResult v g
 
       return (g, res)
     _ -> error "Error : Ghci command failed."
@@ -88,8 +90,8 @@ nextErrOrOut verr vout=
 
 -- | The result
 data GhciResult = GhciResult
-  { ghciOut :: String
-  , ghciErr :: String
+  { ghciErr :: String
+  , ghciOut :: String
   }
   deriving (Show, Eq, Generic)
 
@@ -101,15 +103,15 @@ instance FromJSON GhciResult
 
 -- | Sends a command to ghci and wait for its result.
 --
-sendGhciCmd :: Ghci -> String -> IO GhciResult
-sendGhciCmd g cmd = do
+sendGhciCmd :: Verbosity -> Ghci -> String -> IO GhciResult
+sendGhciCmd v g cmd = do
   flushGhciCmd (ghciIn g) cmd
-  waitGhciResult g
+  waitGhciResult v g
 
 -- | Wait for GHCi to complete its computation
 --
-waitGhciResult :: Ghci -> IO GhciResult
-waitGhciResult g  = do
+waitGhciResult :: Verbosity -> Ghci -> IO GhciResult
+waitGhciResult v g  = do
 
   -- this is a hack : we send a "putStrLn" command to ghci in order to be able
   -- to wait for the result of the command.
@@ -124,14 +126,15 @@ waitGhciResult g  = do
       if s == Right readyString then
         return acc
       else do
-        case s of
-          Left s' -> do
-            hPutStr stderr s'
-            hPutChar stderr '\n'
-            hFlush stderr
-          Right s' -> do
-            putStrLn s'
-            hFlush stdout
+        when (v >= Normal) $
+          case s of
+            Left s' -> do
+              hPutStr stderr s'
+              hPutChar stderr '\n'
+              hFlush stderr
+            Right s' -> do
+              putStrLn s'
+              hFlush stdout
         loop (appendGhciResult acc s)
 
 -- | Take any string and flushed it in stdin of ghci. Multiple line strings are
@@ -164,14 +167,14 @@ cleanResultString s = s
 -- | A utility accumulator type that accumulates lines from stdout and stderr.
 --
 data GhciResultLines = GhciResultLines
-  { ghciOutLines :: [String]
-  , ghciErrLines :: [String]
+  { ghciErrLines :: [String]
+  , ghciOutLines :: [String]
   }
   deriving (Show, Eq)
 
 instance Semigroup GhciResultLines where
-  GhciResultLines o1 e1 <> GhciResultLines o2 e2=
-    GhciResultLines (o1 ++ o2) (e1 ++ e2)
+  GhciResultLines e1 o1 <> GhciResultLines e2 o2 =
+    GhciResultLines (e1 ++ e2) (o1 ++ o2)
 
 instance Monoid GhciResultLines where
   mempty = GhciResultLines [] []
@@ -191,17 +194,9 @@ appendGhciResult acc (Left s) =
 appendGhciResult acc (Right s) =
   acc { ghciOutLines = s : ghciOutLines acc }
 
--- | Concatenates the string by adding a newline '\n' between them.
---
--- For some reason Prelude's unlines adds an extra newline character at the
--- end. This version of unlines doesn't.
--- unlines' :: [String] -> String
--- unlines' [] = ""
--- unlines' [s] = s
--- unlines' (l:ls) = l ++ '\n' : unlines' ls
 
 -- | Converts Ghci accumulated lines to a proper result.
 --
 toGhciResult :: GhciResultLines -> GhciResult
-toGhciResult (GhciResultLines o e) =
-  GhciResult (unlines o) (unlines e)
+toGhciResult (GhciResultLines e o) =
+  GhciResult (unlines (reverse e)) (unlines (reverse o))

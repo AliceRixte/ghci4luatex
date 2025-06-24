@@ -5,3 +5,4 @@ test/
 svg-inkscape/
 _minted*/
 ghci4luatex.cabal
+.vscode

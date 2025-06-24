@@ -1,10 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module Main (main) where
 
-import System.Process.Ghci
+import GHC.Generics
 
+import System.Process.Ghci
 
 import Network.Simple.TCP
 
@@ -13,6 +15,15 @@ import qualified Data.ByteString.Char8 as B
 import System.Console.CmdArgs
 
 import Data.Aeson
+
+data Ghci4luatexMsg = GhciMsg String | LuatexMsg String
+    deriving (Show, Eq, Generic)
+
+
+instance ToJSON Ghci4luatexMsg where
+  toEncoding = genericToEncoding defaultOptions
+
+instance FromJSON Ghci4luatexMsg
 
 
 data Ghci4luatex = Ghci4luatex
@@ -59,15 +70,22 @@ handleClient ghci sock =
                 if B.null bs then
                   return ()
                 else do
-                  let s = B.unpack bs
-                  case lines s of
-                      [] -> return ()
-                      (x:q) -> do
-                        putStrLn $ "ghci> " ++ x
-                        mapM_ (putStrLn . ("ghci| " ++)) q
-                  res <- sendGhciCmd ghci s
-                  print res
-                  let json = encode res <> "\n"
-                  sendLazy sock json -- $ BL.pack(show res ++ "\n")
+                  case decodeStrict bs :: Maybe Ghci4luatexMsg of
+                    Nothing ->
+                      let json = encode (GhciResult "" "ghci4luatex :: \
+                              \ Error :: Could not parse JSON message.")
+                      in
+                        sendLazy sock json
+                    Just (GhciMsg s) -> do
+                      case lines s of
+                          [] -> return ()
+                          (x:q) -> do
+                            putStrLn $ "ghci> " ++ x
+                            mapM_ (putStrLn . ("ghci| " ++)) q
+                      res <- sendGhciCmd ghci s
+                      print res
+                      let json = encode res <> "\n"
+                      sendLazy sock json -- $ BL.pack(show res ++ "\n")
+                    _ -> error "LuatexMsg"
                   loop
             Nothing -> putStrLn "Connexion fermée"

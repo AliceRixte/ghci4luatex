@@ -1,5 +1,4 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
 module System.Process.Ghci where
 
@@ -84,7 +83,6 @@ nextErrOrOut :: TMVar String -> TMVar String -> IO (Either String String)
 nextErrOrOut verr vout=
   atomically $ (Left <$> takeTMVar verr) `orElse`
       ( Right . cleanResultString <$> takeTMVar vout)
-
 
 
 

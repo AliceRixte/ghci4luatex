@@ -6,7 +6,7 @@
 \ghcireadyfalse
 
 \newcommand{\ghciserverhost}{localhost}
-\newcommand{\ghciserverport}{54321}
+\newcommand{\ghciserverport}{54123}
 
 \directlua{
   socket = require("socket")
@@ -15,9 +15,18 @@
 }
 
 \begin{luacode*}
+
+function ghciCmd(code)
+  local msg = {
+    tag = "GhciMsg",
+    contents = code .. "\n"
+  }
+  return json.encode(msg)
+end
+
 function ghci_eval(code)
   if client then
-    client:send(code .. "\n")
+    client:send(ghciCmd(code))
     local response_str, err = client:receive("*l")
     if response_str then
       local response, _ , decode_err = json.decode(response_str)

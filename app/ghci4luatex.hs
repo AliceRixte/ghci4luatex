@@ -5,6 +5,7 @@
 module Main (main) where
 
 import GHC.Generics
+import System.IO
 
 import System.Process.Ghci
 
@@ -16,14 +17,28 @@ import System.Console.CmdArgs
 
 import Data.Aeson
 
-data Ghci4luatexMsg = GhciMsg String | LuatexMsg String
-    deriving (Show, Eq, Generic)
+
+newtype ServerMsg = Memoize String
+  deriving (Show, Eq, Generic)
+
+instance ToJSON ServerMsg where
+  toEncoding = genericToEncoding defaultOptions
+
+instance FromJSON ServerMsg
+
+data Ghci4luatexMsg = GhciMsg String | ServerMsg ServerMsg
+  deriving (Show, Eq, Generic)
 
 
 instance ToJSON Ghci4luatexMsg where
   toEncoding = genericToEncoding defaultOptions
 
 instance FromJSON Ghci4luatexMsg
+
+
+
+
+
 
 
 data Ghci4luatex = Ghci4luatex
@@ -66,15 +81,18 @@ handleClient ghci sock =
         msg <- recv sock 1024
         case msg of
             Just bs -> do
+                putStrLn $ show msg
                 putChar '\n'
                 if B.null bs then
                   return ()
                 else do
                   case decodeStrict bs :: Maybe Ghci4luatexMsg of
                     Nothing ->
-                      let json = encode (GhciResult "" "ghci4luatex :: \
-                              \ Error :: Could not parse JSON message.")
-                      in
+                      let json = encode (GhciResult "" "ghci4luatex :: Error : Could not parse JSON message.")
+                      in do
+                        hPutStr stderr "Error : Could not parse JSON message."
+                        hPutStr stderr "\n"
+                        hFlush stderr
                         sendLazy sock json
                     Just (GhciMsg s) -> do
                       case lines s of
@@ -86,6 +104,8 @@ handleClient ghci sock =
                       print res
                       let json = encode res <> "\n"
                       sendLazy sock json -- $ BL.pack(show res ++ "\n")
-                    _ -> error "LuatexMsg"
+                    Just (ServerMsg (Memoize b)) ->
+                      putStrLn $ "Memoize : " ++ show b
+
                   loop
-            Nothing -> putStrLn "Connexion fermée"
+            Nothing -> putStrLn "Connexion was closed"

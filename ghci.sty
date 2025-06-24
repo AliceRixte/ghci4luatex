@@ -1,6 +1,6 @@
 \RequirePackage{luatex85}
 \RequirePackage{luacode}
-\ProvidesPackage{ghci}[2025/05/02 v1.0.0 GHCi code execution with TCP via Lua]
+\ProvidesPackage{ghci}[2025/06/24 v0.1 GHCi code execution with TCP via Lua]
 
 \newif\ifghciready
 \ghcireadyfalse
@@ -14,8 +14,24 @@
   client = socket.connect("\ghciserverhost", \ghciserverport)
 }
 
+
 \begin{luacode*}
 
+
+function serverMemoize(str)
+ local msg = {
+    tag = "ServerMsg",
+    contents = str
+  }
+  client:send(json.encode(msg))
+end
+
+serverMemoize("main")
+
+\end{luacode*}
+
+
+\begin{luacode*}
 function ghciCmd(code)
   local msg = {
     tag = "GhciMsg",
@@ -23,6 +39,8 @@ function ghciCmd(code)
   }
   return json.encode(msg)
 end
+
+
 
 function ghci_eval(code)
   if client then

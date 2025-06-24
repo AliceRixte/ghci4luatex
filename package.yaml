@@ -24,6 +24,7 @@ dependencies:
 - HaTeX
 - text
 - cmdargs
+- containers
 
 ghc-options:
 - -Wall

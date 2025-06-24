@@ -29,7 +29,9 @@ mapCmd :: Ord k =>
 mapCmd f sm@(SessionMemoizer ms k) =
   sm {sessionMap = Map.insert k (f (lookupCmd sm)) ms }
 
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+
 
 initSession :: Ord k => k -> SessionMemoizer k a b
 initSession k = SessionMemoizer (Map.insert k Cmd.empty Map.empty) k

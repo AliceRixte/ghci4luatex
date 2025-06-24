@@ -15,14 +15,24 @@ import System.Console.CmdArgs
 import Data.Aeson
 
 
-data Ghci4luatex = Ghci4luatex {command  :: String }
+data Ghci4luatex = Ghci4luatex
+  { command  :: String
+  , host :: String
+  , port :: String
+  }
   deriving (Data,Typeable,Show,Eq)
 
-cmdArg =  Ghci4luatex {command = "ghci" &= help "Command to run (defaults to ghci)"} &= summary "ghci4luatex v0.1, (C) Alice Rixte"
+cmdArg :: Ghci4luatex
+cmdArg =  Ghci4luatex
+  { command = "ghci" &= help "Command to run (defaults to ghci)"
+  , host = "127.0.0.1" &= help "Host address (defaults to localhost)"
+  , port = "54123" &= help "Port (defaults to 54123)"
+  }
+  &= summary "ghci4luatex v0.1, (C) Alice Rixte"
 
 main :: IO ()
 main = do
-  Ghci4luatex str <- cmdArgs cmdArg
+  Ghci4luatex str addr prt <- cmdArgs cmdArg
   case words str of
     [] -> putStrLn "Invalid ghci command."
     cmd : ghciArgs -> do
@@ -33,7 +43,7 @@ main = do
       putChar '\n'
       putStrLn "(-: GHCi server is ready :-)"
       putChar '\n'
-      serve (Host "127.0.0.1") "54321" $ \(sock, remoteAddr) -> do
+      serve (Host addr) prt $ \(sock, remoteAddr) -> do
         putStrLn $ "New connection of " ++ show remoteAddr
         handleClient ghci sock
 

@@ -39,10 +39,17 @@ executables:
     source-dirs:         app
     dependencies:
     - ghci4luatex
-
-
     ghc-options:
     - -rtsopts
     - -with-rtsopts=-N
     - -threaded
+
+tests:
+  ghci4luatex-test:
+    main:                Spec.hs
+    source-dirs:         test
+    dependencies:
+    - hspec >= 2.11
+    - QuickCheck
+    - ghci4luatex
 

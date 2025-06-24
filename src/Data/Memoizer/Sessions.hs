@@ -9,6 +9,7 @@ data SessionMemoizer k a b = SessionMemoizer
   { sessionMap :: Map.Map k (CmdMemoizer a b)
   , currentSession :: k
   }
+  deriving (Show,Eq)
 
 data SessionMemoizerException =
   UndefinedSession

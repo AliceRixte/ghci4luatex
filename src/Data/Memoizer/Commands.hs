@@ -8,6 +8,7 @@ data CmdMemoizer a b = CmdMemoizer
   , currentIndex :: Int
   , foundModif :: Bool
   }
+  deriving (Show, Eq)
 
 
 empty :: CmdMemoizer a b
@@ -27,13 +28,18 @@ lookup a (CmdMemoizer m i modif) =
         else
           Nothing
 
+restartSession :: CmdMemoizer a b -> CmdMemoizer a b
+restartSession m = m {currentIndex = 0, foundModif = False}
+
+
 storeResult :: a -> b -> CmdMemoizer a b -> CmdMemoizer a b
 storeResult a b (CmdMemoizer m i _) =
   CmdMemoizer (Map.insert i (a,b) m) (i+1) True
 
+deleteResult :: CmdMemoizer a b -> CmdMemoizer a b
+deleteResult (CmdMemoizer m i _) = CmdMemoizer (Map.delete i m) (i+1) True
+
 nextCmd :: CmdMemoizer a b -> CmdMemoizer a b
 nextCmd m = m {currentIndex = currentIndex m + 1 }
 
-restartSession :: CmdMemoizer a b -> CmdMemoizer a b
-restartSession m = m {currentIndex = 0}
 

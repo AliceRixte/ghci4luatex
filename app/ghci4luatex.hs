@@ -22,7 +22,7 @@ import Data.Aeson
 import System.Process.Ghci
 import qualified Data.Memoizer.Sections as Memo
 
-newtype ServerMsg = NewSection String
+data ServerMsg = NewSection String | ContinueSection String
   deriving (Show, Eq, Generic)
 
 instance ToJSON ServerMsg where
@@ -128,7 +128,11 @@ handleClient v sock ghci memo =
                 Just (ServerMsg (NewSection s)) -> do
                   modifyIORef memo (Memo.newSection s)
                   when (v >= Normal) $ do
-                    putStrLn $ "--- Section : " ++ show s  ++ "---\n"
+                    putStrLn $ "--- New section : " ++ show s  ++ "---\n"
+                Just (ServerMsg (ContinueSection s)) -> do
+                  modifyIORef memo (Memo.continueSection s)
+                  when (v >= Normal) $ do
+                    putStrLn $ "--- Continue section : " ++ show s  ++ "---\n"
 
               loop
             Nothing -> when (v >= Loud) $ do

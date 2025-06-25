@@ -26,7 +26,6 @@ y = 6
 
 \begin{document}
 
-
 \hask{printTex (section "A section using HaTeX")}
 
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
@@ -34,7 +33,6 @@ The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 \section{Combining lhs2TeX and ghci4luatex}
 
 \ghcisection{Combining lhs2Tex}
-
 
 Let |sqr| be the square function:
 
@@ -48,5 +46,7 @@ sqr n = n * n
 \end{ghci}
 
 Then  |sqr 3| is equal to \hask{sqr 3 :: Int}.
+
+\ghcicontinue{main}
 
 \end{document}

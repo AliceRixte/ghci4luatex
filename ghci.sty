@@ -16,18 +16,33 @@
 
 \begin{luacode*}
 
-
-function serverMemoize(str)
+function newGhciSection(str)
  local msg = {
     tag = "ServerMsg",
-    contents = str
+    contents = {
+      tag = "NewSection",
+      contents = str
+    }
   }
   if client then
     client:send(json.encode(msg))
   end
 end
 
-serverMemoize("main")
+function continueGhciSection(str)
+ local msg = {
+    tag = "ServerMsg",
+    contents = {
+      tag = "ContinueSection",
+      contents = str
+    }
+  }
+  if client then
+    client:send(json.encode(msg))
+  end
+end
+
+newGhciSection("main")
 
 \end{luacode*}
 
@@ -115,7 +130,13 @@ end
 
 \newcommand{\ghcisection}[1]{%
   \directlua{
-    serverMemoize([===[#1]===])
+    newGhciSection([===[#1]===])
+  }%
+}
+
+\newcommand{\ghcicontinue}[1]{%
+  \directlua{
+    continueGhciSection([===[#1]===])
   }%
 }
 

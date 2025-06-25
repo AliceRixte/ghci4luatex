@@ -30,6 +30,8 @@ The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 
 \begin{ghci}
 import Text.LaTeX
+
+printTex = putStrLn . prettyLateX
 \end{ghci}
 
 \hask{printTex (section "A section using HaTeX")}

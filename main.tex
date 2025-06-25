@@ -26,6 +26,7 @@ y = 6
 
 \begin{document}
 
+
 \hask{printTex (section "A section using HaTeX")}
 
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
@@ -47,6 +48,20 @@ sqr n = n * n
 
 Then  |sqr 3| is equal to \hask{sqr 3 :: Int}.
 
+
+\section{Advanced : faster compilation with memoization}
+\ghcisection{Using ghcisection}
+
+
+Ignores any modification before this point.
+
+Be careful, this means for instance that if you change the value of |x| in the code before, it will not be updated : $x = \hask{x}$.
+
+
+\subsection{Back to main}
 \ghcicontinue{main}
+If you  want updates of |x| to take effect, you have to use \texttt{ghcicontinue}. The default section is called \texttt{main}.
+
+Let's ask the value of |x| again : $x = \hask{x}$
 
 \end{document}

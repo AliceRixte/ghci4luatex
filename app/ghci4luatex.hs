@@ -102,7 +102,8 @@ handleClient v sock ghci memo =
                 Nothing ->
                   let json = encode (GhciResult  "ghci4luatex :: Error : Could not parse JSON message." "")
                   in do
-                    hPutStr stderr "Error : Could not parse JSON message."
+                    hPutStr stderr $ "Error : Could not parse JSON message : "
+                    hPutStr stderr $ show bs
                     hPutStr stderr "\n"
                     hFlush stderr
                     sendLazy sock json

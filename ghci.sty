@@ -82,13 +82,13 @@ end
     return ""
   end
 
-  function startrecording(envname)
+  function startRecording(envname)
     mybuf = ""
     current_end_marker = "\\end{" .. envname .. "}"
     luatexbase.add_to_callback('process_input_buffer', readbuf, 'readbuf')
   end
 
-  function stoprecording(should_print)
+  function stopRecording(should_print)
     luatexbase.remove_from_callback('process_input_buffer', 'readbuf')
     local buf_without_end = mybuf:gsub(current_end_marker .. "\n", "")
     local res = ghci_eval(buf_without_end)
@@ -99,17 +99,23 @@ end
 \end{luacode*}
 
 \newenvironment{ghci}
-  {\directlua{startrecording("ghci")}}
-  {\directlua{stoprecording(false)}}
+  {\directlua{startRecording("ghci")}}
+  {\directlua{stopRecording(false)}}
 
 \newenvironment{printghci}
-  {\directlua{startrecording("printghci")}}
-  {\directlua{stoprecording(true)}}
+  {\directlua{startRecording("printghci")}}
+  {\directlua{stopRecording(true)}}
 
 \newcommand{\hask}[1]{%
   \directlua{
     local result = ghci_eval([===[#1]===])
     tex.print(result)
+  }%
+}
+
+\newcommand{\ghcisection}[1]{%
+  \directlua{
+    serverMemoize([===[#1]===])
   }%
 }
 

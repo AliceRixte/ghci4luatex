@@ -128,7 +128,7 @@ handleClient v sock ghci memo =
                 Just (ServerMsg (NewSection s)) -> do
                   modifyIORef memo (Memo.newSection s)
                   when (v >= Normal) $ do
-                    putStrLn $ "--- NewSection : " ++ show s  ++ "---\n"
+                    putStrLn $ "--- Section : " ++ show s  ++ "---\n"
 
               loop
             Nothing -> when (v >= Loud) $ do

@@ -28,8 +28,8 @@ lookup a (CmdMemoizer m i modif) =
         else
           Nothing
 
-restartSession :: CmdMemoizer a b -> CmdMemoizer a b
-restartSession m = m {currentIndex = 0, foundModif = False}
+restart :: CmdMemoizer a b -> CmdMemoizer a b
+restart m = m {currentIndex = 0, foundModif = False}
 
 storeResult :: a -> b -> CmdMemoizer a b -> CmdMemoizer a b
 storeResult a b (CmdMemoizer m i _) =

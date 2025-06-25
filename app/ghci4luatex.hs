@@ -20,9 +20,9 @@ import System.Console.CmdArgs
 import Data.Aeson
 
 import System.Process.Ghci
-import qualified Data.Memoizer.Sessions as Memo
+import qualified Data.Memoizer.Sections as Memo
 
-newtype ServerMsg = NewSession String
+newtype ServerMsg = NewSection String
   deriving (Show, Eq, Generic)
 
 instance ToJSON ServerMsg where
@@ -46,7 +46,7 @@ data Ghci4luatex = Ghci4luatex
   }
   deriving (Data,Typeable,Show,Eq)
 
-type GhciMemo =  Memo.SessionMemoizer String String BL.ByteString
+type GhciMemo =  Memo.SectionMemoizer String String BL.ByteString
 
 cmdArg :: Ghci4luatex
 cmdArg =  Ghci4luatex
@@ -76,7 +76,7 @@ main = do
         putStrLn "(-: GHCi server is ready :-)"
         putChar '\n'
 
-      memo <- newIORef (Memo.initSession "main" :: GhciMemo)
+      memo <- newIORef (Memo.initSection "main" :: GhciMemo)
       serve (Host addr) prt $ \(sock, remoteAddr) -> do
         when (v > Normal) $ putStrLn $ "New connection of " ++ show remoteAddr
         handleClient v sock ghci memo
@@ -125,10 +125,10 @@ handleClient v sock ghci memo =
                       modifyIORef memo Memo.nextCmd
                       return json
                   sendLazy sock json
-                Just (ServerMsg (NewSession s)) -> do
-                  modifyIORef memo (Memo.newSession s)
+                Just (ServerMsg (NewSection s)) -> do
+                  modifyIORef memo (Memo.newSection s)
                   when (v >= Normal) $ do
-                    putStrLn $ "--- NewSession : " ++ show s  ++ "---\n"
+                    putStrLn $ "--- NewSection : " ++ show s  ++ "---\n"
 
               loop
             Nothing -> when (v >= Loud) $ do

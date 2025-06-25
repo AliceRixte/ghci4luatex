@@ -13,14 +13,13 @@
 -- commands.
 --
 -- As long as the sequence of commands is identical to the one memoized, we can
--- avoid executing them. As soon as there is one command that defers from the
--- memoized sequence, then we should discard all remaining memoized results and
--- execute all the subsequent commands.
+-- avoid executing them. As soon as there is one command that differs from the
+-- memoized sequence, then we should discard all remaining memoized results.
 --
 -- = Usage
 --
 --
--- Let us store the result of some commands (we alternate between @memo@ and
+-- Let's store the result of some commands (we alternate between @memo@ and
 -- @memo'@ to avoid recursive definitions)
 --
 -- >>> import Prelude hiding (lookup)
@@ -30,24 +29,26 @@
 --
 --
 --
--- Suppose there are no more commands, and we want to rerun a sequence of
--- commands, and use the memoized value as long as the commands are identical :
+-- Suppose there are no more commands in the sequence. Now we want to execute
+-- that sequence of commands again but some commands may have changed in
+-- between. We use memoized commands as long as all commands are equal to the
+-- previous ones:
 --
 -- >>> memo = restart memo'
 -- >>> lookup "x=1" memo
 -- Just ""
 --
--- Since the command was memoized, we avoid executing is again. Now suppose the command @"y=2"@ by @"y=3"@
+-- Since the command was memoized, we avoid executing is again. Now suppose the command @"y=2"@ was replaced by @"y=3"@
 --
 -- >>> memo' = nextCmd memo
 -- >>> lookup "y=3" memo'
 -- Nothing
 --
--- Since the command was not memoized, we have to execute it :
+-- Since the command was not memoized, we have to execute it:
 --
 -- >>> memo = storeResult "y=3" "" memo'
 --
--- Now none the subsequent commands will not use the memoized version :
+-- Now none of the subsequent commands will use the memoized version:
 --
 -- >>> memo' = nextCmd memo
 -- >>> lookup "x+y" memo'
@@ -59,9 +60,9 @@ module Data.Memoizer.Commands
   ( CmdMemoizer
   , empty
   , storeResult
+  , deleteResult
   , lookup
   , restart
-  , deleteResult
   , nextCmd
   )
 where
@@ -84,7 +85,7 @@ data CmdMemoizer a b = CmdMemoizer
   }
   deriving (Show, Eq)
 
--- | The memoized results for an empty sequence of commands
+-- | Memoizer of an empty sequence of commands
 --
 empty :: CmdMemoizer a b
 empty = CmdMemoizer Map.empty 0 False
@@ -100,17 +101,17 @@ restart m = m {currentIndex = 0, foundModif = False}
 
 -- | Store the result of the execution of a command.
 --
--- This will override the current memoized command, and prevent to access any
--- memoized command until @'restart'@ is used.
+-- This will override the current memoized command, and prevent access to
+-- any memoized result until @'restart'@ is used.
 --
 storeResult :: a -> b -> CmdMemoizer a b -> CmdMemoizer a b
 storeResult a b (CmdMemoizer m i _) =
   CmdMemoizer (Map.insert i (a,b) m) (i+1) True
 
--- | Deletes the result of the current memoized command.
+-- | Delete the result of the current memoized command.
 --
--- This will override the current memoized command, and prevent to access any
--- memoized command until @'restart'@ is used.
+-- This will override the current memoized command, and prevent access to any
+-- memoized result until @'restart'@ is used.
 --
 deleteResult :: CmdMemoizer a b -> CmdMemoizer a b
 deleteResult (CmdMemoizer m i _) = CmdMemoizer (Map.delete i m) (i+1) True

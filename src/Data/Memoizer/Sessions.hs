@@ -11,7 +11,7 @@
 --
 -- Memoize several sessions and switch between them.
 --
--- This enables the use of the @\\ghciSession{My Session}@ and
+-- This enables the use of the @\\ghcisection{My Session}@ and
 -- @\\ghcicontinue{My Session}@ command in the @ghci@ LuaTex package.
 --
 -- = Usage
@@ -21,30 +21,31 @@
 -- @memo'@ to avoid recursive definitions)
 --
 -- >>> import Prelude hiding (lookup)
+--
 -- >>> memo = initSession "main" :: SessionMemoizer String String String
 -- >>> memo' = storeResult "x=1" "" memo
 -- >>> memo = storeResult "y=2" "" memo'
 -- >>> memo' = storeResult "x+y" "3" memo
 --
--- Let use create a new session :
+-- Let use create a new session:
 --
 -- >>> memo = newSession "My Session" memo'
 -- >>> memo' = storeResult "a=1" "" memo
 --
 -- Now if we create a new session called "main" again, we can use the memoized
--- values :
+-- values:
 --
 -- >>> memo = newSession "main" memo'
 -- >>> lookup "x=1" memo
 -- Just ""
 --
 --
--- But we still have some commands to add to "My Session" :
+-- But we still have some commands to add to "My Session":
 --
 -- >>> memo' = continueSession "My Session" memo
 -- >>> memo = storeResult "a" "1" memo'
 --
--- Now let's restart "My Session" :
+-- Now let's restart "My Session":
 --
 -- >>> memo' = newSession "My Session" memo
 -- >>> lookup "a=1" memo
@@ -70,7 +71,7 @@ import Prelude hiding (lookup)
 import qualified Data.Memoizer.Commands as Cmd
 import qualified Data.Map as Map
 
--- | A container of  memoizers for sequences of commands
+-- | A container of  memoizers for sequences of commands.
 --
 -- * @k@ is the key representing the name of a session
 -- * @a@ is the type of commands
@@ -99,7 +100,7 @@ mapCmd f sm@(SessionMemoizer ms k) =
 
 -------------------------------------------------------------------------------
 
--- | Create a new session memoizer using a default session
+-- | Create a new session memoizer using a default session.
 --
 initSession :: Ord k => k -> SessionMemoizer k a b
 initSession k = SessionMemoizer (Map.insert k Cmd.empty Map.empty) k
@@ -118,27 +119,29 @@ newSession k (SessionMemoizer ms _) =
 continueSession :: Ord k => k -> SessionMemoizer k a b -> SessionMemoizer k a b
 continueSession k m = m {currentSession = k}
 
--- | Lookup the memoized result of the current session
+-- | Lookup the memoized result of the current session.
 --
 lookup :: (Eq a, Ord k) => a -> SessionMemoizer k a b -> Maybe b
 lookup a  = Cmd.lookup a . lookupCmd
 
--- | Move the current session to the next command
+-- | Move the current session to the next command.
 --
 nextCmd :: Ord k => SessionMemoizer k a b -> SessionMemoizer k a b
 nextCmd = mapCmd Cmd.nextCmd
 
--- | Store a result in the current session
+-- | Store a result in the current session.
 --
--- This will prevent to access any memoized command of the current session until
+-- This will prevent access to any memoized result of the current session until
 -- @'newSession'@ is used.
+--
 storeResult :: Ord k => a -> b -> SessionMemoizer k a b -> SessionMemoizer k a b
 storeResult a b = mapCmd (Cmd.storeResult a b)
 
--- | Delete the current result in the current session
+-- | Delete the current result in the current session.
 --
--- This will prevent to access any memoized command of the current session until
+-- This will prevent access to any memoized result  of the current session until
 -- @'newSession'@ is used.
+--
 deleteResult :: Ord k
   =>  SessionMemoizer k a b -> SessionMemoizer k a b
 deleteResult = mapCmd Cmd.deleteResult

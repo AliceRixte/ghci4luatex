@@ -1,5 +1,5 @@
 name:                ghci4luatex
-version:             0.0.0
+version:             0.1
 github:              "AliceRixte/ghci4luatex"
 license:             BSD3
 author:              "Alice Rixte"

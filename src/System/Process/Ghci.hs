@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingVia #-}
 
 module System.Process.Ghci where
 
@@ -7,12 +8,14 @@ import Control.Monad
 import Control.Concurrent
 import Control.Concurrent.STM
 import GHC.Generics
-
 import System.IO
 import System.IO.Error
 import System.Process
+import Data.String
+import Data.Text
 
 import System.Console.CmdArgs.Verbosity
+
 
 
 import Data.Aeson
@@ -90,11 +93,12 @@ nextErrOrOut verr vout=
 
 -- | The result
 data GhciResult = GhciResult
-  { ghciErr :: String
-  , ghciOut :: String
+  { ghciErr :: Text
+  , ghciOut :: Text
   }
-  deriving (Show, Eq, Generic)
-
+  deriving (Show, Generic)
+  deriving Semigroup  via Generically GhciResult
+  deriving Monoid  via Generically GhciResult
 
 instance ToJSON GhciResult where
   toEncoding = genericToEncoding defaultOptions
@@ -116,9 +120,7 @@ waitGhciResult v g  = do
   -- this is a hack : we send a "putStrLn" command to ghci in order to be able
   -- to wait for the result of the command.
   flushGhciCmd (ghciIn g) $ "putStrLn\"" ++ readyString ++ "\"\n"
-
-  acc <- loop mempty
-  return $ toGhciResult acc
+  loop mempty
 
   where
     loop acc = do
@@ -137,6 +139,14 @@ waitGhciResult v g  = do
               hFlush stdout
         loop (appendGhciResult acc s)
 
+-- | A very unlikely string that we make ghci print  in order to know when ghci
+-- is finished.
+--
+-- This is a hack, of course, but it works well.
+--
+readyString :: String
+readyString = "`}$/*^`a`('))}{h}"
+
 -- | Take any string and flushed it in stdin of ghci. Multiple line strings are
 -- accepted and surrounded by ":{" and ":}"
 --
@@ -144,16 +154,6 @@ flushGhciCmd :: Handle -> String -> IO ()
 flushGhciCmd hin cmd = do
   hPutStr hin (":{\n" ++ cmd ++ "\n:}\n") -- TODO optimization when no newline ?
   hFlush hin
-
-
--- | A very unlikely string that we make ghci print  in order to know when ghci
--- is finished.
---
--- This is a hack, of course, but it works well.
---
-readyString :: String
-readyString = "`}./*^`a`('))}{h}"
-
 
 -- Remove the "ghci> " and "ghci| " prefixes from the output stream of ghci.
 --
@@ -164,39 +164,12 @@ cleanResultString ('g' : 'h' : 'c' : 'i' : '|': ' ' : s) =
   cleanResultString s
 cleanResultString s = s
 
--- | A utility accumulator type that accumulates lines from stdout and stderr.
---
-data GhciResultLines = GhciResultLines
-  { ghciErrLines :: [String]
-  , ghciOutLines :: [String]
-  }
-  deriving (Show, Eq)
-
-instance Semigroup GhciResultLines where
-  GhciResultLines e1 o1 <> GhciResultLines e2 o2 =
-    GhciResultLines (e1 ++ e2) (o1 ++ o2)
-
-instance Monoid GhciResultLines where
-  mempty = GhciResultLines [] []
-
-
-
 
 -- | Utility function that allows to merge the stderr and the stdout streams of
--- ghci. When both streams are active after sending a command, this is because
--- ghci is issuing a warning.
+-- ghci.
 --
--- Beware : for performance reasons, the lists are reversed.
---
-appendGhciResult :: GhciResultLines -> Either String String -> GhciResultLines
+appendGhciResult :: GhciResult -> Either String String -> GhciResult
 appendGhciResult acc (Left s) =
-  acc { ghciErrLines = s : ghciErrLines acc }
+  acc { ghciErr = ghciErr acc <> fromString s }
 appendGhciResult acc (Right s) =
-  acc { ghciOutLines = s : ghciOutLines acc }
-
-
--- | Converts Ghci accumulated lines to a proper result.
---
-toGhciResult :: GhciResultLines -> GhciResult
-toGhciResult (GhciResultLines e o) =
-  GhciResult (unlines (reverse e)) (unlines (reverse o))
+  acc { ghciOut = ghciOut acc <> fromString s }

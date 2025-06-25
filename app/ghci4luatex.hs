@@ -69,7 +69,7 @@ main = do
         putStrLn "(-: Starting GHCi Server :-)"
         putChar '\n'
 
-      (ghci, _) <- startGhci v cmd ghciArgs
+      ghci <- startGhci v cmd ghciArgs
 
       when (v >= Normal) $ do
         putChar '\n'
@@ -112,7 +112,7 @@ handleClient v sock ghci memo =
                   json <- case Memo.lookup s m of
                     Nothing -> do
                       when (v >= Normal) $ printGhciMsg s
-                      res <- sendGhciCmd v ghci (s ++ "\n")
+                      res <- execGhciCmd ghci v (s ++ "\n")
                       when (v >= Normal) $ putStrLn ""
                       let json = encode res <> "\n"
                       modifyIORef memo (Memo.storeResult s json)

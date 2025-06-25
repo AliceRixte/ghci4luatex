@@ -20,9 +20,9 @@ import System.Console.CmdArgs
 import Data.Aeson
 
 import System.Process.Ghci
-import qualified Data.Memoizer.Sections as Memo
+import qualified Data.Memoizer.Sessions as Memo
 
-data ServerMsg = NewSection String | ContinueSection String
+data ServerMsg = NewSession String | ContinueSession String
   deriving (Show, Eq, Generic)
 
 instance ToJSON ServerMsg where
@@ -46,7 +46,7 @@ data Ghci4luatex = Ghci4luatex
   }
   deriving (Data,Typeable,Show,Eq)
 
-type GhciMemo =  Memo.SectionMemoizer String String BL.ByteString
+type GhciMemo =  Memo.SessionMemoizer String String BL.ByteString
 
 cmdArg :: Ghci4luatex
 cmdArg =  Ghci4luatex
@@ -76,7 +76,7 @@ main = do
         putStrLn "(-: GHCi server is ready :-)"
         putChar '\n'
 
-      memo <- newIORef (Memo.initSection "main" :: GhciMemo)
+      memo <- newIORef (Memo.initSession "main" :: GhciMemo)
       serve (Host addr) prt $ \(sock, remoteAddr) -> do
         when (v > Normal) $ putStrLn $ "New connection of " ++ show remoteAddr
         handleClient v sock ghci memo
@@ -126,14 +126,14 @@ handleClient v sock ghci memo =
                       modifyIORef memo Memo.nextCmd
                       return json
                   sendLazy sock json
-                Just (ServerMsg (NewSection s)) -> do
-                  modifyIORef memo (Memo.newSection s)
+                Just (ServerMsg (NewSession s)) -> do
+                  modifyIORef memo (Memo.newSession s)
                   when (v >= Normal) $ do
-                    putStrLn $ "--- New section : " ++ show s  ++ "---\n"
-                Just (ServerMsg (ContinueSection s)) -> do
-                  modifyIORef memo (Memo.continueSection s)
+                    putStrLn $ "--- New session : " ++ show s  ++ "---\n"
+                Just (ServerMsg (ContinueSession s)) -> do
+                  modifyIORef memo (Memo.continueSession s)
                   when (v >= Normal) $ do
-                    putStrLn $ "--- Continue section : " ++ show s  ++ "---\n"
+                    putStrLn $ "--- Continue session : " ++ show s  ++ "---\n"
 
               loop
             Nothing -> when (v >= Loud) $ do

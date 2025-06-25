@@ -1,13 +1,96 @@
 
 \documentclass{article}
 
+%include polycode.fmt
+
+\usepackage[margin=1.7in]{geometry}
+\usepackage{xcolor}
 \usepackage{listings}
 \usepackage{ghci}
 
 \usepackage{tabularx}
 
+\usepackage{hyperref}
 
-%include polycode.fmt
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listingsutf8}
+
+\newtcolorbox{latexbox}{
+  enhanced,
+  colback=white,
+  colframe=black,
+  fonttitle=\bfseries,
+  listing only,
+  listing options={
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    columns=fullflexible,
+    escapeinside={(*@}{@*)},
+    language=[LaTeX]TeX
+  },
+  sharp corners,
+  boxrule=0.8pt,
+  breakable
+}
+
+\lstset{%
+  language=[AlLaTeX]TeX,
+  alsolanguage=MetaPost,
+  texcsstyle=\color{blue},
+  moretexcs={hask },
+  basicstyle=\ttfamily,
+    alsoother={0123456789$_$},%
+}
+
+\newtcolorbox{warningbox}{
+  colback=yellow!10,
+  colframe=orange!80!black,
+  coltitle=black,
+  title=\faExclamationTriangle\quad Warning,
+  fonttitle=\bfseries,
+  sharp corners,
+  boxrule=1pt,
+  left=1em,
+  right=1em,
+  top=0.8em,
+  bottom=0.8em,
+  breakable
+}
+
+\newtcolorbox{infobox}{
+  colback=blue!10,
+  colframe=blue!80!black,
+  coltitle=black,
+  title=\faInfoCircle\quad Information,
+  fonttitle=\bfseries,
+  sharp corners,
+  boxrule=1pt,
+  left=1em,
+  right=1em,
+  top=0.8em,
+  bottom=0.8em,
+  breakable
+}
+
+\newtcolorbox{tipbox}{
+  colback=green!10,
+  colframe=green!80!black,
+  coltitle=black,
+  title=\faLightbulbO\quad Tip,
+  fonttitle=\bfseries,
+  sharp corners,
+  boxrule=1pt,
+  left=1em,
+  right=1em,
+  top=0.8em,
+  bottom=0.8em,
+  breakable
+}
+
+
+\usepackage{fontawesome} % for \faExclamationTriangle icon
+
+
 
 %format ghci4luatex = "\text{GHCi for Lua\TeX}"
 %format luatex = "\text{Lua\TeX}"
@@ -30,31 +113,223 @@ y = 5
 \end{ghci}
 
 \title{|ghci4luatex| \\ \vspace{0.4em}
-  \large A ghci session in |luatex|}
+  \large A persistant ghci session in |luatex|}
 
 \author{Alice Rixte}
 
 \begin{document}
 
 \maketitle
+\tableofcontents
 
-\section{Presentation}
+\newpage
+
+\section{Introduction}
+
+
+|ghci4luatex| is a tool that allows to use a GHCi session within a \LaTeX\ document. Using the \texttt{ghci} package via \texttt{\textbackslash \tex {\color{blue} usepackage}\{ghci\}}, it mainly provides the \texttt{ghci} environment and the \texttt{hask} command which can be used as follows :
+
+\begin{latexbox}
+  \begin{lstlisting}{language=[AlLaTeX]TeX}
+\begin{ghci}
+x :: Int
+x = 4
+
+y :: Int
+y = 5
+\end{ghci}
+
+The sum of $x$ and $y$ when $x = \hask{x}$
+and $y = \hask{y}$ is $\hask{x + y}$.
+
+\end{lstlisting}
+\end{latexbox}
 
 \section{Getting started}
 
-\section{The GHCi server}
+In order to execute the Haskell code, the \texttt{ghci4luatex} server must be running. If you are concerned with security issues, you are encouraged to verify the code source at \href{https://github.com/AliceRixte/ghci4luatex/}{github.com/AliceRixte/ghci4luatex/}. In particular, you can make sure that
 
-\section{The GHCi package for |luatex|}
+\begin{itemize}
+  \item  the \texttt{ghci.sty} package can only connect to the local address \texttt{127.0.0.1} and will not attempt to connect to any online service
+  \item the \texttt{ghci4luatex} server only processes the commands sent by \texttt{ghci.sty}
+\end{itemize}
+
+\subsection{Installing the \texttt{ghci4luatex} server}
+
+To install \texttt{ghci4luatex}, you need to have Haskell installed as well as cabal or stack.
+
+You can install \texttt{ghci4luatex} either using Cabal, Stack, or directly from source. In all cases, you must have Haskell installed as well as cabal or stack.
+
+To check that \texttt{ghci4luatex} is properly installed, run
+
+\begin{verbatim}
+  ghci4luatex --version
+\end{verbatim}
+Modulo the version, this should produce de following output \texttt{ghci4luatex v0.1, (C) Alice Rixte}
+
+\paragraph{Using \href{https://www.haskell.org/cabal/}{cabal} (not yet supported)}
+
+\begin{verbatim}
+  cabal install ghci4luatex
+\end{verbatim}
+
+\paragraph{Using \href{https://docs.haskellstack.org/en/stable/}{stack} (not yet supported)}
+
+\begin{verbatim}
+  stack install ghci4luatex
+\end{verbatim}
+
+\paragraph{From  \href{https://github.com/AliceRixte/ghci4luatex/}{source}}
+
+\begin{verbatim}
+  git clone https://github.com/AliceRixte/ghci4luatex.git
+  cd ghci4luatex
+  stack install
+\end{verbatim}
+
+\paragraph{Checking the installation went right}
+To check that \texttt{ghci4luatex} is properly installed, run
+
+\begin{verbatim}
+  ghci4luatex --version
+\end{verbatim}
+Modulo the version, this should produce de following output
+
+\begin{verbatim}
+  ghci4luatex v0.1, (C) Alice Rixte
+\end{verbatim}
+\subsection{Installing the \texttt{ghci} package}
+
+To install the \texttt{ghci} package for Lua\TeX, you can use either your package manager or install it from source.
+
+\paragraph{Using TeX live (not yet supported).}
+\begin{verbatim}
+  tlmgr install ghci
+\end{verbatim}
+\paragraph{Using MiKTeX (not yet supported). }
+\begin{verbatim}
+  mpm --admin --install=ghci
+\end{verbatim}
+\paragraph{From source}
+Copy both \texttt{ghci.sty} and \texttt{dkjson.lua} inside the root directory of the latex file you want to use \texttt{ghci4luatex} in.
+
+Both these files can be found at the root of the \texttt{ghci4luatex} repository : \href{https://github.com/AliceRixte/ghci4luatex/}{github.com/AliceRixte/ghci4luatex/}
+
+\subsection{Running the \texttt{ghci4luatex} server}
+
+Once both \texttt{ghci4luatex} and the \texttt{ghci} package are installed, simply run the following in the same directory you will use Luatex :
+
+\begin{verbatim}
+  ghci4luatex
+\end{verbatim}
+
+The server should remain active while you are working on your file. You should not close it between two compilations as it performs memoization to make the compilation faster.
+
+\begin{tipbox}
+Always have a terminal with \texttt{ghci4luatex} running, it will give you more readable error messages from GHCi, and will show you which Haskell expressions are recomputed or not.
+\end{tipbox}
+
+
+Once \texttt{ghci4luatex} is running, you can execute Luatex with
+
+\begin{verbatim}
+  lualatex -shell-escape myFile.tex
+\end{verbatim}
+
+or use \texttt{latexmk} using the luatex option :
+
+\begin{verbatim}
+  latexmk -lualatex -shell-escape myFile.tex
+\end{verbatim}
+
+\begin{warningbox}
+  Without the \texttt{-shell-escape} option, the compilation will fail, complaining about not finding the \texttt{'socket'} file.
+\end{warningbox}
+
+\section{The \texttt{ghci.sty} package}
+
+The \texttt{ghci} package allows to execute GHCi commands.
+
+\subsection{Running Haskell code : the \texttt{ghci} environment}
+
+To execute some Haskell code without printing anything to LaTeX, you can use the \texttt{ghci} environment. \texttt{ghci4luatex} will always surroung the code between \texttt{\textbackslash \tex {\color{blue} begin}\{ghci\}} and  \texttt{\textbackslash \tex {\color{blue} end}\{ghci\}} by \texttt{:\{} and \texttt{:\}} so that GHCi knows this is a multiple line command.
+
+\begin{latexbox}
+\begin{lstlisting}{language=[AlLaTeX]TeX}
+\begin{ghci}
+x :: Int
+x = 4
+
+y :: Int
+y = 5
+\end{ghci}
+\end{lstlisting}
+\end{latexbox}
+
+\paragraph{Using GHCi commands} You can also send GHCi commands (i.e. starting with `:`), for instance to load extensions :
+
+  \begin{lstlisting}{language=[AlLaTeX]TeX}
+  \begin{ghci}
+  :set -XOverloadedStrings
+  \end{ghci}
+  \end{lstlisting}
+
+\begin{warningbox}
+  Since the code is always enclosed within \texttt{:\{} and \texttt{:\}}, this means you can only give one GHCi command (i.e. starting with `:`) at a time. The following will fail with the message \texttt{unrecognised flag: :set}
+  \begin{lstlisting}{language=[AlLaTeX]TeX}
+  \begin{ghci}
+  :set -XOverloadedStrings
+  :set -XOverloadedLists
+  \end{ghci}
+  \end{lstlisting}
+\end{warningbox}
+
+
+\paragraph{Importing modules}
+You can use the \texttt{ghci} to import any module you need, it will be available in the whole file.
+
+\begin{lstlisting}{language=[AlLaTeX]TeX}
+\begin{ghci}
+import Data.Functor
+import Control.Monad
+\end{ghci}
+\end{lstlisting}
+
+If you need to import modules on Hackage, you can use \texttt{:set -package some-package}. To load your own modules you can use \texttt{:l}.
+
+\begin{tipbox}
+  You can directly load all the modules of your own package as well as all of the dependencies listed in you \texttt{.cabal} (or \texttt{.yaml} file) by running \texttt{ghci4luatex --command="cabal repl"} or \texttt{ghci4luatex --command="stack ghci"}.
+\end{tipbox}
+
+
+\subsection{Printing the result : the \texttt{hask} command}
+
+You can use Haskell to print some LaTeX code. For instance, \texttt{\$\textbackslash \tex {\color{blue} hask}\{1+2\}\$} will print $\hask{1 + 2}$.
+
+
+The result printed by GHCi can also be  LaTeX expressions. For instance,
+
+\begin{lstlisting}{language=[AlLaTeX]TeX}
+  \hask{putStrLn "\\emph{I was written by GHCi}"}.
+\end{lstlisting}
+\noindent
+will produce \hask{putStrLn "\\emph{I was written by GHCi}"}.
+
+
+
+\subsection{Advanced usage : manage memoization}
+
+To reduce the compilation time of LuaTeX, the result of those commands is stored in the server in order to avoid
+
+\section{The \texttt{ghci4luatex} server}
 
 \section{Tips and tricks}
 
-\hask{printTex (section "A section using HaTeX")}
+\subsection{Cabal and stack}
+\subsection{lhs2TeX}
+\subsection{HaTeX}
 
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
-
-\section{Combining lhs2TeX and ghci4luatex}
-
-
 
 Let |sqr| be the square function:
 

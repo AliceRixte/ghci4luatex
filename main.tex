@@ -14,19 +14,20 @@
 
 \begin{ghci}
 import Text.LaTeX
+
+printTex = putStrLn . prettyLateX
 \end{ghci}
 
 \begin{ghci}
 x :: Int
-x = 4
+x = 5
+
 
 y :: Int
 y = 6
 \end{ghci}
 
 \begin{document}
-
-
 \hask{printTex (section "A section using HaTeX")}
 
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.

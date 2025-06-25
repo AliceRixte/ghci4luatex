@@ -1,6 +1,28 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 
+
+--------------------------------------------------------------------------------
+-- |
+--
+-- Module      :  System.Process.Ghci
+-- Description :  GHCi as a process
+-- Copyright   :  (c) Alice Rixte 2024
+-- License     :  BSD 3
+-- Maintainer  :  alice.rixte@u-bordeaux.fr
+-- Stability   :  unstable
+-- Portability :  non-portable (GHC extensions)
+--
+-- Run GHCi as a process, and execute commands.
+--
+-- = Usage
+--
+-- >>> ghci <- startGhci Quiet "ghci" []
+-- >>> execGhciCmd ghci Quiet "1+2"
+-- GhciResult {ghciErr = "", ghciOut = "3"}
+--
+--------------------------------------------------------------------------------
+
 module System.Process.Ghci
   ( Ghci (..)
   , startGhci

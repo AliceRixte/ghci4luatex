@@ -22,7 +22,9 @@ function serverMemoize(str)
     tag = "ServerMsg",
     contents = str
   }
-  client:send(json.encode(msg))
+  if client then
+    client:send(json.encode(msg))
+  end
 end
 
 serverMemoize("main")

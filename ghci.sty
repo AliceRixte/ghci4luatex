@@ -20,7 +20,7 @@ function newGhciSection(str)
  local msg = {
     tag = "ServerMsg",
     contents = {
-      tag = "NewSection",
+      tag = "NewSession",
       contents = str
     }
   }
@@ -29,11 +29,11 @@ function newGhciSection(str)
   end
 end
 
-function continueGhciSection(str)
+function continueGhciSession(str)
  local msg = {
     tag = "ServerMsg",
     contents = {
-      tag = "ContinueSection",
+      tag = "ContinueSession",
       contents = str
     }
   }

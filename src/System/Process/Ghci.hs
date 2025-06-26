@@ -28,7 +28,6 @@ module System.Process.Ghci
   , startGhci
   , GhciResult (..)
   , execGhciCmd
-
   )
 where
 
@@ -89,6 +88,11 @@ startGhci v cmd args = do
 
       let g = Ghci hin verr vout hp errId outId
 
+      -- the following is very hacky : Sometimes, "stack ghci" may ask some file
+      -- to the user. For this reason we send ghci a confirmation for whatever
+      -- default values it proposes, then wait for 200 ms to make sur ghci did
+      -- receive that answer.
+      flushGhciCmd (ghciIn g) "\n"
       threadDelay 2000000 -- wait 200 ms to make sure GHCi is ready to listen
 
       _ <- waitGhciResult g v
@@ -213,3 +217,5 @@ appendGhciResult acc (Left s) =
   acc { ghciErr = ghciErr acc <> fromString s }
 appendGhciResult acc (Right s) =
   acc { ghciOut = ghciOut acc <> fromString s }
+
+

@@ -16,7 +16,7 @@
 
 \begin{luacode*}
 
-function newGhciSection(str)
+function newGhciSession(str)
  local msg = {
     tag = "ServerMsg",
     contents = {
@@ -29,7 +29,7 @@ function newGhciSection(str)
   end
 end
 
-function continueGhciSection(str)
+function continueGhciSession(str)
  local msg = {
     tag = "ServerMsg",
     contents = {
@@ -42,7 +42,7 @@ function continueGhciSection(str)
   end
 end
 
-newGhciSection("main")
+newGhciSession("main")
 
 \end{luacode*}
 
@@ -128,15 +128,15 @@ end
   }%
 }
 
-\newcommand{\ghcisection}[1]{%
+\newcommand{\ghcisession}[1]{%
   \directlua{
-    newGhciSection([===[#1]===])
+    newGhciSession([===[#1]===])
   }%
 }
 
 \newcommand{\ghcicontinue}[1]{%
   \directlua{
-    continueGhciSection([===[#1]===])
+    continueGhciSession([===[#1]===])
   }%
 }
 

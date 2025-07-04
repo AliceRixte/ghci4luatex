@@ -44,7 +44,7 @@
 
 \newtcolorbox{warningbox}{
   colback=yellow!10,
-  colframe=orange!80!black,
+  colframe=orange!40,
   coltitle=black,
   title=\faExclamationTriangle\quad Warning,
   fonttitle=\bfseries,
@@ -73,8 +73,8 @@
 }
 
 \newtcolorbox{tipbox}{
-  colback=green!10,
-  colframe=green!80!black,
+  colback=green!7,
+  colframe=green!80!black!40,
   coltitle=black,
   title=\faLightbulbO\quad Tip,
   fonttitle=\bfseries,
@@ -246,6 +246,21 @@ or use \texttt{latexmk} using the luatex option :
   Without the \texttt{-shell-escape} option, the compilation will fail, complaining about not finding the \texttt{'socket'} file.
 \end{warningbox}
 
+\section{The \texttt{ghci4luatex} server}
+
+The  \texttt{ghci4luatex} proposes a few options that can be listed by invoking \texttt{ghci4luatex --help}. In particular:
+
+\begin{description}
+  \item[--command] Use this to use cabal or stack to run GHCi. For instance, you can run \begin{itemize}
+    \item \texttt{ghci4luatex --command="cabal repl"}
+    \item \texttt{ghci4luatex --command="stack ghci"}
+  \end{itemize}
+  \item[--verbose] This will show which commands were memoized.
+  \item[--quiet] Except for errors due to the server (not GHCi error dumps), \texttt{ghci4luatex} will be completely silent.
+  \item[--host and --port] Change the host adress and port. Notice that this requires you to also change the host and port in \texttt{ghci4luatex}. Using these options is discouraged.
+\end{description}
+
+
 \section{The \texttt{ghci.sty} package}
 
 The \texttt{ghci} package allows to execute GHCi commands.
@@ -301,7 +316,6 @@ If you need to import modules on Hackage, you can use \texttt{:set -package some
   You can directly load all the modules of your own package as well as all of the dependencies listed in you \texttt{.cabal} (or \texttt{.yaml} file) by running \texttt{ghci4luatex --command="cabal repl"} or \texttt{ghci4luatex --command="stack ghci"}.
 \end{tipbox}
 
-
 \subsection{Printing the result : the \texttt{hask} command}
 
 You can use Haskell to print some LaTeX code. For instance, \texttt{\$\textbackslash \tex {\color{blue} hask}\{1+2\}\$} will print $\hask{1 + 2}$.
@@ -319,30 +333,98 @@ will produce \hask{putStrLn "\\emph{I was written by GHCi}"}.
 
 \subsection{Advanced usage : manage memoization}
 
-To reduce the compilation time of LuaTeX, the result of those commands is stored in the server in order to avoid
+To reduce the compilation time of LuaTeX, the result of those commands is stored in the server in order to avoid recomputing them. This is called \emph{memoization}.
 
-\section{The \texttt{ghci4luatex} server}
+You can see this at work in the output of the \texttt{ghci4luatex} server : if you modify your latex document without changing any of the commands, the server will only print
 
-\section{Tips and tricks}
+\begin{lstlisting}{language=[AlLaTeX]TeX}
+  --- New session : "main"---
+\end{lstlisting}
 
-\subsection{Cabal and stack}
-\subsection{lhs2TeX}
-\subsection{HaTeX}
+\begin{tipbox}
+  To see which results are memoized and which are recomputed, you can use the \texttt{--verbose} option when running \texttt{ghci4luatex}.
+\end{tipbox}
 
-The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 
-Let |sqr| be the square function:
+If you modify one of the Haskell snippets, \texttt{ghci4luatex} will have to recompute all of the snippets that are called after the snippet you modified.
 
-\begin{code}
-sqr n = n * n
-\end{code}
+The reason for this is that if you declare a variable, for instance by writing \texttt{x = 4}, and you then modify it to \texttt{x = 5}, all the subsequent code that use \texttt{x} has to be updated, and therefore recomputed by \texttt{ghci4luatex}.
 
+\medskip
+
+\paragraph{Using \texttt{\textbackslash ghcisession}}
+When dealing with big documents that contain a lot of Haskell code that might generate some figures, it can become painfully slow to recompile a document when changing one of the first code snippets that appear in the document.
+
+For this reason, you can tell the \texttt{ghci4luatex} to create a new session, by using the command
+
+\begin{lstlisting}{language=[AlLaTeX]TeX}
+\ghcisession{mySession}
+\end{lstlisting}
+
+This way, if you modify any of the code snippets before you started \texttt{mySession}, the server will not recompile the code snippets that are situated \emph{after} \texttt{\textbackslash ghcisession}
+
+\begin{warningbox}
+  The \texttt{ghci4luatex} server actually \emph{does not} spawn a new GHCi process every time it receives a new session.
+
+  Instead, it only affects the memoization and there is really only one GHCi process. This means that if you declare a variable \texttt{x = 4} then declare a new session, this variable will still be in the session scope.
+\end{warningbox}
+
+\paragraph{Using \texttt{\textbackslash ghcicontinue}} If you want to continue a previously defined session, for instance the default session \texttt{"main"} you can use
+
+\begin{lstlisting}{language=[AlLaTeX]TeX}
+\ghcicontinue{main}
+\end{lstlisting}
+
+Notice that this only affects memoization and does not actually switch bewtween different GHCi processes.
+
+\begin{tipbox}
+  If you want to make sure to recompile all Haskell code of your document, simply kill \texttt{ghci4luatex} and start a new one.
+\end{tipbox}
+
+
+\section{Usage with Haskell libraries}
+
+Any Haskell library that may be used in conjunction with \texttt{ghci4luatex}. Here, we propose a selection along with a common way to use them. Feel free to add your own suggestions by opening a pull request \href{https://github.com/AliceRixte/ghci4luatex/}{github.com/AliceRixte/ghci4luatex/}
+
+\subsection{\href{https://hackage.haskell.org/package/lhs2tex}{lhs2TeX} and \href{https://daniel-diaz.github.io/projects/haskintex/}{HaskinTeX}}
+
+Any preprocessor can be used in conjunction with \texttt{ghci4luatex}, since it is a proper LaTeX package and not a preprocessor itself.
+
+Simply run the preprocessor and use \texttt{ghci4luatex} as usual.
+
+\subsection{\href{https://hackage.haskell.org/package/HaTeX}{HaTeX}}
+
+You can use HaTeX to generate some LaTeX code. To use it in conjunction with \texttt{ghci4luatex}, you need to print the latex code in GHCi.
+
+A simple way to do so is to declare
+
+\begin{latexbox}
+  \begin{lstlisting}{language=[AlLaTeX]TeX}
 \begin{ghci}
-  sqr :: Num a => a -> a
-  sqr n = n * n
+:set -XOverloadedStrings
 \end{ghci}
 
-Then  |sqr 3| is equal to \hask{sqr 3 :: Int}.
+\begin{ghci}
+import Text.LaTeX
+
+printTex = putStrLn . prettyLateX
+\end{ghci}
+\end{lstlisting}
+\end{latexbox}
+
+You can then use the \texttt{printTex} function with the \texttt{\textbackslash hask} command :
+
+\begin{lstlisting}{language=[AlLaTeX]TeX}
+\hask{printTex (section "A section using HaTeX")}
+\end{lstlisting}
+
+\subsection{\href{https://diagrams.github.io/}{Diagrams}}
+
+Diagrams is a domain-specific language to draw vector graphics. It already has a \href{https://archives.haskell.org/projects.haskell.org/diagrams/doc/latex.html}{dedicated LaTeX package} that you might prefer to use rather than \texttt{ghci4luatex}.
+
+
+
+
 
 
 \end{document}

@@ -57,6 +57,7 @@
   breakable
 }
 
+
 \newtcolorbox{infobox}{
   colback=blue!10,
   colframe=blue!80!black,
@@ -94,23 +95,6 @@
 
 %format ghci4luatex = "\text{GHCi for Lua\TeX}"
 %format luatex = "\text{Lua\TeX}"
-
-\begin{ghci}
-:set -XOverloadedStrings
-\end{ghci}
-
-\begin{ghci}
-import Text.LaTeX
-\end{ghci}
-
-
-\begin{ghci}
-x :: Int
-x = 4
-
-y :: Int
-y = 5
-\end{ghci}
 
 \title{|ghci4luatex| \\ \vspace{0.4em}
   \large A persistent ghci session in |luatex|}

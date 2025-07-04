@@ -1,0 +1,9 @@
+ghci.sty
+dkjson.lua
+build
+svg-inkscape/
+myDia.svg
+
+# Allow
+
+!/ghci-doc.pdf

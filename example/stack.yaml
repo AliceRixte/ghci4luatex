@@ -1,0 +1,6 @@
+
+snapshot: lts-23.21
+
+packages:
+- .
+

@@ -1,0 +1,15 @@
+
+
+dependencies:
+- base >= 4.18 && < 5
+- HaTeX
+- diagrams-lib
+- diagrams-svg
+
+ghc-options:
+- -Wall
+
+
+library:
+  source-dirs: src
+

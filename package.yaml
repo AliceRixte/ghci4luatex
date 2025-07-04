@@ -21,7 +21,7 @@ dependencies:
 - stm
 - bytestring
 - aeson
-- HaTeX
+# - HaTeX
 - text
 - cmdargs
 - containers

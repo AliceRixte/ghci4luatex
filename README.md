@@ -22,7 +22,7 @@ y = 5
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 ```
 
-* You can use `HaTeX`:
+### HaTeX
 
 ```latex
 
@@ -40,7 +40,7 @@ printTex = putStrLn . prettyLaTeX
 \hask{printTex (section "A section using HaTeX")}
 ```
 
-* You can use `Diagrams`:
+### Diagrams
 
 ```latex
 
@@ -67,8 +67,6 @@ myDia = circle 1 # fc green
   \caption{A circle using Diagrams}
 \end{figure}
 ```
-
-* Use any package you need by adding it to `package.yaml` (if the package is on Stackage) or to `stack.yaml` if it is your own package or only on Hackage.
 
 ## Documentation
 

@@ -113,7 +113,7 @@ y = 5
 \end{ghci}
 
 \title{|ghci4luatex| \\ \vspace{0.4em}
-  \large A persistant ghci session in |luatex|}
+  \large A persistent ghci session in |luatex|}
 
 \author{Alice Rixte}
 
@@ -127,7 +127,7 @@ y = 5
 \section{Introduction}
 
 
-|ghci4luatex| is a tool that allows to use a GHCi session within a \LaTeX\ document. Using the \texttt{ghci} package via \texttt{\textbackslash \tex {\color{blue} usepackage}\{ghci\}}, it mainly provides the \texttt{ghci} environment and the \texttt{hask} command which can be used as follows :
+|ghci4luatex| provides a persistent GHCi session within a \LaTeX\ document. Using the \texttt{ghci} package via \texttt{\textbackslash \tex {\color{blue} usepackage}\{ghci\}}, it mainly provides the \texttt{ghci} environment and the \texttt{hask} command which can be used as follows:
 
 \begin{latexbox}
   \begin{lstlisting}{language=[AlLaTeX]TeX}
@@ -147,16 +147,14 @@ and $y = \hask{y}$ is $\hask{x + y}$.
 
 \section{Getting started}
 
-In order to execute the Haskell code, the \texttt{ghci4luatex} server must be running. If you are concerned with security issues, you are encouraged to verify the code source at \href{https://github.com/AliceRixte/ghci4luatex/}{github.com/AliceRixte/ghci4luatex/}. In particular, you can make sure that
+In order to execute the Haskell code, the \texttt{ghci4luatex} server must be running. If you are concerned with security issues, you are encouraged to verify the source code at \href{https://github.com/AliceRixte/ghci4luatex/}{github.com/AliceRixte/ghci4luatex/}. In particular, you can make sure that
 
 \begin{itemize}
-  \item  the \texttt{ghci.sty} package can only connect to the local address \texttt{127.0.0.1} and will not attempt to connect to any online service
+  \item  the \texttt{ghci.sty} package can only connect to the local address \texttt{127.0.0.1} and will not attempt to connect to any external service
   \item the \texttt{ghci4luatex} server only processes the commands sent by \texttt{ghci.sty}
 \end{itemize}
 
 \subsection{Installing the \texttt{ghci4luatex} server}
-
-To install \texttt{ghci4luatex}, you need to have Haskell installed as well as cabal or stack.
 
 You can install \texttt{ghci4luatex} either using Cabal, Stack, or directly from source. In all cases, you must have Haskell installed as well as cabal or stack.
 
@@ -167,13 +165,13 @@ To check that \texttt{ghci4luatex} is properly installed, run
 \end{verbatim}
 Modulo the version, this should produce de following output \texttt{ghci4luatex v0.1, (C) Alice Rixte}
 
-\paragraph{Using \href{https://www.haskell.org/cabal/}{cabal} (not yet supported)}
+\paragraph{Using \href{https://www.haskell.org/cabal/}{cabal}}
 
 \begin{verbatim}
   cabal install ghci4luatex
 \end{verbatim}
 
-\paragraph{Using \href{https://docs.haskellstack.org/en/stable/}{stack} (not yet supported)}
+\paragraph{Using \href{https://docs.haskellstack.org/en/stable/}{stack}}
 
 \begin{verbatim}
   stack install ghci4luatex
@@ -187,13 +185,13 @@ Modulo the version, this should produce de following output \texttt{ghci4luatex 
   stack install
 \end{verbatim}
 
-\paragraph{Checking the installation went right}
+\paragraph{Verifying the installation was successful}
 To check that \texttt{ghci4luatex} is properly installed, run
 
 \begin{verbatim}
   ghci4luatex --version
 \end{verbatim}
-Modulo the version, this should produce de following output
+Modulo the version, this should produce the following output
 
 \begin{verbatim}
   ghci4luatex v0.1, (C) Alice Rixte
@@ -202,7 +200,7 @@ Modulo the version, this should produce de following output
 
 To install the \texttt{ghci} package for Lua\TeX, you can use either your package manager or install it from source.
 
-\paragraph{Using TeX live (not yet supported).}
+\paragraph{Using TeX Live (not yet supported).}
 \begin{verbatim}
   tlmgr install ghci
 \end{verbatim}
@@ -211,32 +209,32 @@ To install the \texttt{ghci} package for Lua\TeX, you can use either your packag
   mpm --admin --install=ghci
 \end{verbatim}
 \paragraph{From source}
-Copy both \texttt{ghci.sty} and \texttt{dkjson.lua} inside the root directory of the latex file you want to use \texttt{ghci4luatex} in.
+Copy both \texttt{ghci.sty} and \texttt{dkjson.lua} inside the root directory of the Latex file you want to use \texttt{ghci4luatex} in.
 
-Both these files can be found at the root of the \texttt{ghci4luatex} repository : \href{https://github.com/AliceRixte/ghci4luatex/}{github.com/AliceRixte/ghci4luatex/}
+Both these files can be found at the root of the \texttt{ghci4luatex} repository: \href{https://github.com/AliceRixte/ghci4luatex/}{github.com/AliceRixte/ghci4luatex/}
 
 \subsection{Running the \texttt{ghci4luatex} server}
 
-Once both \texttt{ghci4luatex} and the \texttt{ghci} package are installed, simply run the following in the same directory you will use Luatex :
+Once both \texttt{ghci4luatex} and the \texttt{ghci} package are installed, simply run the following in the same directory you will use LuaTeX:
 
 \begin{verbatim}
   ghci4luatex
 \end{verbatim}
 
-The server should remain active while you are working on your file. You should not close it between two compilations as it performs memoization to make the compilation faster.
+The server should remain active while you are working on your file. You should not close it between consecutive compilations as it performs memoization to make the compilation faster.
 
 \begin{tipbox}
-Always have a terminal with \texttt{ghci4luatex} running, it will give you more readable error messages from GHCi, and will show you which Haskell expressions are recomputed or not.
+Always have a terminal with \texttt{ghci4luatex} running, it will give you clearer error messages from GHCi, and will show you which Haskell expressions are recomputed and which are not.
 \end{tipbox}
 
 
-Once \texttt{ghci4luatex} is running, you can execute Luatex with
+Once \texttt{ghci4luatex} is running, you can execute LuaTeX with
 
 \begin{verbatim}
   lualatex -shell-escape myFile.tex
 \end{verbatim}
 
-or use \texttt{latexmk} using the luatex option :
+or use \texttt{latexmk} using the luatex option:
 
 \begin{verbatim}
   latexmk -lualatex -shell-escape myFile.tex
@@ -248,26 +246,26 @@ or use \texttt{latexmk} using the luatex option :
 
 \section{The \texttt{ghci4luatex} server}
 
-The  \texttt{ghci4luatex} proposes a few options that can be listed by invoking \texttt{ghci4luatex --help}. In particular:
+The  \texttt{ghci4luatex} provides a few options that can be listed by invoking \texttt{ghci4luatex --help}. In particular:
 
 \begin{description}
-  \item[--command] Use this to use cabal or stack to run GHCi. For instance, you can run \begin{itemize}
+  \item[--command] Allows using cabal or stack to run GHCi. For instance, you can run \begin{itemize}
     \item \texttt{ghci4luatex --command="cabal repl"}
     \item \texttt{ghci4luatex --command="stack ghci"}
   \end{itemize}
   \item[--verbose] This will show which commands were memoized.
   \item[--quiet] Except for errors due to the server (not GHCi error dumps), \texttt{ghci4luatex} will be completely silent.
-  \item[--host and --port] Change the host adress and port. Notice that this requires you to also change the host and port in \texttt{ghci4luatex}. Using these options is discouraged.
+  \item[--host and --port] Change the host address and port. Notice that this requires you to also change the host and port in \texttt{ghci.sty}. Using these options is discouraged.
 \end{description}
 
 
 \section{The \texttt{ghci.sty} package}
 
-The \texttt{ghci} package allows to execute GHCi commands.
+The \texttt{ghci} package can both execute Haskell code snippets and GHCi commands thanks to the \texttt{ghci} environment and print the result to LaTeX with the \texttt{\textbackslash hask} command.
 
-\subsection{Running Haskell code : the \texttt{ghci} environment}
+\subsection{Running Haskell code: the \texttt{ghci} environment}
 
-To execute some Haskell code without printing anything to LaTeX, you can use the \texttt{ghci} environment. \texttt{ghci4luatex} will always surroung the code between \texttt{\textbackslash \tex {\color{blue} begin}\{ghci\}} and  \texttt{\textbackslash \tex {\color{blue} end}\{ghci\}} by \texttt{:\{} and \texttt{:\}} so that GHCi knows this is a multiple line command.
+To execute some Haskell code without printing anything to LaTeX, you can use the \texttt{ghci} environment. \texttt{ghci4luatex} will always surround the code between \texttt{\textbackslash \tex {\color{blue} begin}\{ghci\}} and  \texttt{\textbackslash \tex {\color{blue} end}\{ghci\}} by \texttt{:\{} and \texttt{:\}} so that GHCi knows this is a multiple line command.
 
 \begin{latexbox}
 \begin{lstlisting}{language=[AlLaTeX]TeX}
@@ -281,7 +279,7 @@ y = 5
 \end{lstlisting}
 \end{latexbox}
 
-\paragraph{Using GHCi commands} You can also send GHCi commands (i.e. starting with `:`), for instance to load extensions :
+\paragraph{Using GHCi commands} You can also send GHCi commands (i.e. starting with `:`), for instance to load extensions:
 
   \begin{lstlisting}{language=[AlLaTeX]TeX}
   \begin{ghci}
@@ -301,7 +299,7 @@ y = 5
 
 
 \paragraph{Importing modules}
-You can use the \texttt{ghci} to import any module you need, it will be available in the whole file.
+You can use the \texttt{ghci} environment to import any module you need, it will be available throughout the whole file.
 
 \begin{lstlisting}{language=[AlLaTeX]TeX}
 \begin{ghci}
@@ -310,15 +308,15 @@ import Control.Monad
 \end{ghci}
 \end{lstlisting}
 
-If you need to import modules on Hackage, you can use \texttt{:set -package some-package}. To load your own modules you can use \texttt{:l}.
+If you need to import modules on Hackage, you can use \texttt{:set -package some-package}. To load your own modules, use \texttt{:l}.
 
 \begin{tipbox}
-  You can directly load all the modules of your own package as well as all of the dependencies listed in you \texttt{.cabal} (or \texttt{.yaml} file) by running \texttt{ghci4luatex --command="cabal repl"} or \texttt{ghci4luatex --command="stack ghci"}.
+  You can directly load all the modules of your own package as well as all of the dependencies listed in your \texttt{.cabal} (or \texttt{package.yaml} file) by running \texttt{ghci4luatex --command="cabal repl"} or \texttt{ghci4luatex --command="stack ghci"}.
 \end{tipbox}
 
-\subsection{Printing the result : the \texttt{hask} command}
+\subsection{Printing the result: the \texttt{hask} command}
 
-You can use Haskell to print some LaTeX code. For instance, \texttt{\$\textbackslash \tex {\color{blue} hask}\{1+2\}\$} will print $\hask{1 + 2}$.
+You can use Haskell to output LaTeX code. For instance, \texttt{\$\textbackslash \tex {\color{blue} hask}\{1+2\}\$} will print $\hask{1 + 2}$.
 
 
 The result printed by GHCi can also be  LaTeX expressions. For instance,
@@ -331,11 +329,11 @@ will produce \hask{putStrLn "\\emph{I was written by GHCi}"}.
 
 
 
-\subsection{Advanced usage : manage memoization}
+\subsection{Advanced usage: managing memoization}
 
-To reduce the compilation time of LuaTeX, the result of those commands is stored in the server in order to avoid recomputing them. This is called \emph{memoization}.
+To reduce the compilation time of LuaTeX, the result of the execution of Haskell code snippets is stored in the server in order to avoid recomputing them. This is called \emph{memoization}.
 
-You can see this at work in the output of the \texttt{ghci4luatex} server : if you modify your latex document without changing any of the commands, the server will only print
+You can see this at work in the output of the \texttt{ghci4luatex} server: if you modify your LaTeX document without changing any of the commands, the server will only print
 
 \begin{lstlisting}{language=[AlLaTeX]TeX}
   --- New session : "main"---
@@ -346,27 +344,27 @@ You can see this at work in the output of the \texttt{ghci4luatex} server : if y
 \end{tipbox}
 
 
-If you modify one of the Haskell snippets, \texttt{ghci4luatex} will have to recompute all of the snippets that are called after the snippet you modified.
+If you modify one of the Haskell snippets, \texttt{ghci4luatex} will have to recompute all of the snippets that appear after the one you modified.
 
-The reason for this is that if you declare a variable, for instance by writing \texttt{x = 4}, and you then modify it to \texttt{x = 5}, all the subsequent code that use \texttt{x} has to be updated, and therefore recomputed by \texttt{ghci4luatex}.
+The reason for this is that if you declare a variable, for instance by writing \texttt{x = 4}, and you then modify it to \texttt{x = 5}, all the subsequent code that uses \texttt{x} has to be updated, and therefore recomputed by \texttt{ghci4luatex}.
 
 \medskip
 
 \paragraph{Using \texttt{\textbackslash ghcisession}}
 When dealing with big documents that contain a lot of Haskell code that might generate some figures, it can become painfully slow to recompile a document when changing one of the first code snippets that appear in the document.
 
-For this reason, you can tell the \texttt{ghci4luatex} to create a new session, by using the command
+For this reason, you can tell \texttt{ghci4luatex} to create a new session, by using the command
 
 \begin{lstlisting}{language=[AlLaTeX]TeX}
 \ghcisession{mySession}
 \end{lstlisting}
 
-This way, if you modify any of the code snippets before you started \texttt{mySession}, the server will not recompile the code snippets that are situated \emph{after} \texttt{\textbackslash ghcisession}
+This way, if you modify any of the code snippets before you started \texttt{mySession}, the server will not recompile the code snippets that appear \emph{after} \texttt{\textbackslash ghcisession}
 
 \begin{warningbox}
-  The \texttt{ghci4luatex} server actually \emph{does not} spawn a new GHCi process every time it receives a new session.
+  The \texttt{ghci4luatex} server actually \emph{does not} spawn a new GHCi process for each new session.
 
-  Instead, it only affects the memoization and there is really only one GHCi process. This means that if you declare a variable \texttt{x = 4} then declare a new session, this variable will still be in the session scope.
+  Instead, it only affects the memoization and there is actually only one GHCi process. This means that if you declare a variable \texttt{x = 4} then declare a new session, this variable will still be in the session scope.
 \end{warningbox}
 
 \paragraph{Using \texttt{\textbackslash ghcicontinue}} If you want to continue a previously defined session, for instance the default session \texttt{"main"} you can use
@@ -375,7 +373,7 @@ This way, if you modify any of the code snippets before you started \texttt{mySe
 \ghcicontinue{main}
 \end{lstlisting}
 
-Notice that this only affects memoization and does not actually switch bewtween different GHCi processes.
+Notice that this only affects memoization and does not actually switch between different GHCi processes.
 
 \begin{tipbox}
   If you want to make sure to recompile all Haskell code of your document, simply kill \texttt{ghci4luatex} and start a new one.
@@ -384,7 +382,7 @@ Notice that this only affects memoization and does not actually switch bewtween 
 
 \section{Usage with Haskell libraries}
 
-Any Haskell library that may be used in conjunction with \texttt{ghci4luatex}. Here, we propose a selection along with a common way to use them. Feel free to add your own suggestions by opening a pull request \href{https://github.com/AliceRixte/ghci4luatex/}{github.com/AliceRixte/ghci4luatex/}.
+Any Haskell library can be used in conjunction with \texttt{ghci4luatex}. Here, we present only a selection along with common usage examples. Feel free to add your own suggestions by opening a pull request \href{https://github.com/AliceRixte/ghci4luatex/}{github.com/AliceRixte/ghci4luatex/}.
 
 
 Usage for all these libraries can be found in \texttt{examples/main.tex} at the \texttt{ghci4luatex} repository.
@@ -399,7 +397,7 @@ Simply run the preprocessor and use \texttt{ghci4luatex} as usual.
 
 You can use HaTeX to generate some LaTeX code. To use it in conjunction with \texttt{ghci4luatex}, you need to print the latex code in GHCi.
 
-A simple way to do so is to declare
+A simple way to do so is to write the following:
 
 \begin{latexbox}
   \begin{lstlisting}{language=[AlLaTeX]TeX}
@@ -415,7 +413,7 @@ printTex = putStrLn . prettyLateX
 \end{lstlisting}
 \end{latexbox}
 
-You can then use the \texttt{printTex} function with the \texttt{\textbackslash hask} command :
+You can then use the \texttt{printTex} function with the \texttt{\textbackslash hask} command:
 
 \begin{lstlisting}{language=[AlLaTeX]TeX}
 \hask{printTex (section "A section using HaTeX")}
@@ -423,12 +421,7 @@ You can then use the \texttt{printTex} function with the \texttt{\textbackslash 
 
 \subsection{\href{https://diagrams.github.io/}{Diagrams}}
 
-Diagrams is a domain-specific language to draw vector graphics. It already has a dedicated LaTeX package, \href{https://archives.haskell.org/projects.haskell.org/diagrams/doc/latex.html}{diagrams-latex} that you might prefer to use rather than \texttt{ghci4luatex}.
-
-Contrarily to \texttt{diagrams-latex}, \texttt{ghci4luatex} is persistant and makes it easy to progressively define a diagram.
-
-Here is an example of how it can be used :
-
+Diagrams is a domain-specific language for drawing vector graphics. It already has a dedicated LaTeX package, \href{https://archives.haskell.org/projects.haskell.org/diagrams/doc/latex.html}{diagrams-latex} you should definitely consider using. Still, \texttt{ghci4luatex} has some advantage over \texttt{diagrams-latex}, mainly the persistency of the GHCi session. Here is a complete example with the \texttt{svg} package:
 
 \begin{latexbox}
   \begin{lstlisting}{language=[AlLaTeX]TeX}

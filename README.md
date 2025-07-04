@@ -78,7 +78,7 @@ ghci4luatex
 latexmk -shell-escape -lualatex main.tex
 ```
 
-## Use with any Haskell library
+## Use any Haskell library
 
 ### HaTeX
 

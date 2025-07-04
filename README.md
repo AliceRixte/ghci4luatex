@@ -70,6 +70,9 @@ myDia = circle 1 # fc green
 
 * Use any package you need by adding it to `package.yaml` (if the package is on Stackage) or to `stack.yaml` if it is your own package or only on Hackage.
 
+## Documentation
+
+You can find the full pdf documentation in [this repository](./doc/ghci-doc.pdf)
 
 ## Quick start
 

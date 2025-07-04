@@ -22,51 +22,6 @@ y = 5
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 ```
 
-### HaTeX
-
-```latex
-
-\begin{ghci}
-:set -XOverloadedStrings
-\end{ghci}
-
-\begin{ghci}
-import Text.LaTeX
-import Text.LaTeX.Base.Pretty
-
-printTex = putStrLn . prettyLaTeX
-\end{ghci}
-
-\hask{printTex (section "A section using HaTeX")}
-```
-
-### Diagrams
-
-```latex
-
-\usepackage{svg}
-
-\begin{ghci}
-{-# LANGUAGE NoMonomorphismRestriction #-}
-{-# LANGUAGE FlexibleContexts          #-}
-{-# LANGUAGE TypeFamilies              #-}
-
-import Diagrams.Prelude hiding (section)
-import Diagrams.Backend.SVG
-
-myDia = circle 1 # fc green
-\end{ghci}
-
-\begin{ghci}
-  renderSVG "myDia.svg" (dims2D 400 300) myDia
-\end{ghci}
-
-\begin{figure}[h]
-  \centering
-  \includesvg[width=0.2\textwidth]{myDia}
-  \caption{A circle using Diagrams}
-\end{figure}
-```
 
 ## Documentation
 
@@ -121,6 +76,54 @@ ghci4luatex
 
 ```
 latexmk -shell-escape -lualatex main.tex
+```
+
+## Use with any Haskell library
+
+### HaTeX
+
+```latex
+
+\begin{ghci}
+:set -XOverloadedStrings
+\end{ghci}
+
+\begin{ghci}
+import Text.LaTeX
+import Text.LaTeX.Base.Pretty
+
+printTex = putStrLn . prettyLaTeX
+\end{ghci}
+
+\hask{printTex (section "A section using HaTeX")}
+```
+
+### Diagrams
+
+```latex
+
+\usepackage{svg}
+
+\begin{ghci}
+{-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE FlexibleContexts          #-}
+{-# LANGUAGE TypeFamilies              #-}
+
+import Diagrams.Prelude hiding (section)
+import Diagrams.Backend.SVG
+
+myDia = circle 1 # fc green
+\end{ghci}
+
+\begin{ghci}
+  renderSVG "myDia.svg" (dims2D 400 300) myDia
+\end{ghci}
+
+\begin{figure}[h]
+  \centering
+  \includesvg[width=0.2\textwidth]{myDia}
+  \caption{A circle using Diagrams}
+\end{figure}
 ```
 
 ## Workflow with `lhs2tex` in Visual Studio Code with LaTeX workshop

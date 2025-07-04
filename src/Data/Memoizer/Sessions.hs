@@ -11,7 +11,7 @@
 --
 -- Memoize several sessions and switch between them.
 --
--- This enables the use of the @\\ghcisection{My Session}@ and
+-- This enables the use of the @\\ghcisession{My Session}@ and
 -- @\\ghcicontinue{My Session}@ command in the @ghci@ LuaTex package.
 --
 -- = Usage

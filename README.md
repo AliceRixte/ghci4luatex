@@ -2,7 +2,7 @@
 
 [![Haskell](https://img.shields.io/badge/language-Haskell-orange.svg)](https://haskell.org) [![Hackage](https://img.shields.io/hackage/v/ghci4luatex.svg)](https://hackage.haskell.org/package/ghci4luatex)  [![BSD3 License](https://img.shields.io/badge/license-BSD3-blue.svg)](https://github.com/AliceRixte/ghci4luatex/LICENSE)
 
-Run a GHCi session within a latex document :
+Run a GHCi session within a LaTeX document :
 
 * The `ghci` environment evaluates Haskell code without printing anything :
 

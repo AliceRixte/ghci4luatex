@@ -1,15 +1,25 @@
 name:                ghci4luatex
-version:             0.1
+version:             0.0
 github:              "AliceRixte/ghci4luatex"
 license:             BSD-3-Clause
 author:              "Alice Rixte"
 maintainer:          "alice.rixte@u-bordeaux.fr"
-copyright:           "Alice Rixte 2024"
+copyright:           "Copyright (C) 2025 Alice Rixte"
 synopsis:            A GHCi session in LaTeX
 category:            Latex, Program
 
 description:         Please see the README on GitHub at <https://github.com/AliceRixte/pandia/blob/main/ghci4luatex#readme>
 
+extra-source-files:
+- README.md
+- dkjson.lua
+- ghci.sty
+
+
+extra-doc-files:
+- CHANGELOG.md
+- doc/ghci-doc.pdf
+- doc/ghci-doc.tex
 
 dependencies:
 - base >= 4.18 && < 5

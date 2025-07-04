@@ -10,7 +10,7 @@ exe = ghci4luatex
 tst = $(pkg)-test
 bch = $(pkg)-bench
 
-lhs = main
+main = main
 lhsExt = tex
 texExt = tex
 texBuild = build
@@ -57,8 +57,8 @@ endif
 
 latex:
 	$(call mkdir_p,$(texBuild))
-	lhs2TeX --poly -o $(texBuild)/$(lhs).$(texExt) $(lhs).$(lhsExt)
-	latexmk -shell-escape  -file-line-error -lualatex -halt-on-error -outdir=$(texBuild) $(texBuild)/$(lhs).tex
+	lhs2TeX --poly -o $(texBuild)/$(main).$(texExt) $(main).$(lhsExt)
+	latexmk -shell-escape  -file-line-error -lualatex -halt-on-error -outdir=$(texBuild) $(texBuild)/$(main).tex
 
 
 build:

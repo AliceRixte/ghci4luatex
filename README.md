@@ -43,6 +43,9 @@ printTex = putStrLn . prettyLaTeX
 * You can use `Diagrams`:
 
 ```latex
+
+\usepackage{svg}
+
 \begin{ghci}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE FlexibleContexts          #-}

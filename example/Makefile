@@ -2,14 +2,12 @@
 # Source directory (one level up)
 ghciPackageDir := ..
 
-lhs = main
+main = main
 lhsExt = tex
 texExt = tex
 
 ghciPackageFiles := ghci.sty dkjson.lua
 texBuild = build
-
-
 
 all: latex
 
@@ -21,10 +19,11 @@ else
 	$(copy_file) $(foreach file,$(ghciPackageFiles),$(ghciPackageDir)/$(file)) .
 endif
 
+
 latex: copy_files
 	$(call mkdir_p,$(texBuild))
-	lhs2TeX --poly -o $(texBuild)/$(lhs).$(texExt) $(lhs).$(lhsExt)
-	latexmk -shell-escape  -file-line-error -lualatex -halt-on-error -outdir=$(texBuild) $(texBuild)/$(lhs).tex
+	lhs2TeX --poly -o $(texBuild)/$(main).$(texExt) $(main).$(lhsExt)
+	latexmk -shell-escape  -file-line-error -lualatex -halt-on-error -outdir=$(texBuild) $(texBuild)/$(main).tex
 
 clean:
  $(call rm_r,$(texBuild))

@@ -1,111 +1,18 @@
 
 \documentclass{article}
 
-\usepackage{listings}
 \usepackage{ghci}
 
-\usepackage{tabularx}
-\usepackage{svg}
-%include polycode.fmt
-
-
-
-
-
-
-
 \begin{document}
-
-\section{Simple example}
 
 \begin{ghci}
 x :: Int
 x = 5
-
 
 y :: Int
 y = 6
 \end{ghci}
 
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-\begin{ghci}
-:set -XOverloadedStrings
-\end{ghci}
-
-\begin{ghci}
-import Text.LaTeX
-import Text.LaTeX.Base.Pretty
-
-printTex = putStrLn . prettyLaTeX
-\end{ghci}
-
-\hask{printTex (section "HaTeX")}
-
-\hask{printTex (emph "Emphasized by HaTeX")}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Combining lhs2TeX and ghci4luatex}
-
-\ghcisession{Combining lhs2Tex}
-
-Let |sqr| be the square function:
-
-\begin{code}
-sqr n = n * n
-\end{code}
-
-\begin{ghci}
-  sqr :: Num a => a -> a
-  sqr n = n * n
-\end{ghci}
-
-Then  |sqr 3| is equal to \hask{sqr 3 :: Int}.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Diagrams}
-
-\begin{ghci}
-{-# LANGUAGE NoMonomorphismRestriction #-}
-{-# LANGUAGE FlexibleContexts          #-}
-{-# LANGUAGE TypeFamilies              #-}
-
-import Diagrams.Prelude hiding (section)
-import Diagrams.Backend.SVG
-
-myDia = circle 1 # fc green
-\end{ghci}
-
-\begin{ghci}
-  renderSVG "myDia.svg" (dims2D 400 300) myDia
-\end{ghci}
-
-\begin{figure}[h]
-  \centering
-  \includesvg[width=0.2\textwidth]{myDia}
-  \caption{A circle using Diagrams}
-\end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Advanced : faster compilation with memoization}
-\ghcisession{Using ghcisession}
-
-Ignores any modification before this point.
-
-Be careful, this means for instance that if you change the value of |x| in the code before, it will not be updated : $x = \hask{x}$.
-
-
-\subsection{Back to main}
-\ghcicontinue{main}
-If you  want updates of |x| to take effect, you have to use \texttt{ghcicontinue}. The default section is called \texttt{main}.
-
-Let's ask the value of |x| again : $x = \hask{x}$
 
 \end{document}

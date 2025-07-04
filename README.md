@@ -2,7 +2,7 @@
 
 Run a GHCi session within a latex document :
 
-* The `ghci` environment evaluates haskell code without printing anything :
+* The `ghci` environment evaluates Haskell code without printing anything :
 
 ```latex
 \begin{ghci}
@@ -14,7 +14,7 @@ y = 5
 \end{ghci}
 ```
 
-* The `hask` command evaluates any ghci command and prints in Haskell what GHCi printed :
+* The `hask` command evaluates any GHCi command and prints in Haskell what GHCi printed :
 
 ```latex
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
@@ -40,32 +40,62 @@ printTex = putStrLn . prettyLateX
 * Use any package you need by adding it to `package.yaml` (if the package is on Stackage) or to `stack.yaml` if it is your own package or only on Hackage.
 
 
-## Install
+## Quick start
 
-1. Install `haskell`, `stack` and `lhs2tex` 
 
-2. Clone this repository :
+1. Install `haskell` and `cabal` or `stack`
 
-```
-git clone https://github.com/AliceRixte/ghci4luatex.git
-cd ghci4luatex
-```
-
-3. Run the ghci server :
+2. Install `ghci4luatex`by running either
 
 ```
-make run
+cabal install ghci4luatex
 ```
 
-4. Edit `main.tex`
-  
-5. Open an other shell and compile to pdf:
+or
 
 ```
-make latex
+stack install ghci4luatex
 ```
 
-## Workflow in Visual Studio Code with LaTeX workshop
+3. Copy `ghci.sty` and `dkjson.lua` in the folder containing a `main.tex` file with the following content :
+
+``` latex
+\documentclass{article}
+
+\usepackage{ghci}
+
+\begin{document}
+
+\begin{ghci}
+x :: Int
+x = 5
+
+y :: Int
+y = 6
+\end{ghci}
+
+The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
+
+\end{document}
+```
+
+4. Within that folder, run the `ghci4luatex` server :
+
+```
+ghci4luatex
+```
+
+5. Open another shell and compile with `luatex` :
+
+```
+latexmk -shell-escape -lualatex main.tex
+```
+
+## Workflow with `lhs2tex` in Visual Studio Code with LaTeX workshop
+
+In this repository, you will find an [example](./example/README.md) that contains a [Makefile](./example/Makefile).
+
+You can take inspiration from this to use `make` in a LateX Workshop receipe :
 
 1. Install the [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) extension.
 2. In `settings.json` , add the following
@@ -85,14 +115,10 @@ make latex
             "command": "make",
             "args": [
                 "latex",
-                "lhs=%DOCFILE%"
+                "main=%DOCFILE%"
             ],
             "env": {}
         }
     ],
 ```
-
-
-
-
 

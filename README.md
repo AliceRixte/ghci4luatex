@@ -25,7 +25,7 @@ The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 
 ## Documentation
 
-You can find the full pdf documentation in [this repository](./doc/ghci-doc.pdf)
+You can find the full pdf documentation in [here](./doc/ghci-doc.pdf)
 
 ## Quick start
 

@@ -16,15 +16,14 @@ description:         Please see the README on GitHub at <https://github.com/Alic
 
 dependencies:
 - base >= 4.18 && < 5
-- process
-- network-simple
-- stm
-- bytestring
-- aeson
-# - HaTeX
-- text
-- cmdargs
-- containers
+- process >= 1.6.25 && < 1.7
+- network-simple >= 0.4 && < 0.5
+- stm >= 2.5 && < 2.6
+- bytestring >= 0.12 && < 0.13
+- aeson >= 2.2 && < 2.3
+- text >= 2.1 && < 2.2
+- cmdargs >= 0.10 && < 0.11
+- containers >= 0.6 && < 0.7
 
 ghc-options:
 - -Wall

@@ -1,15 +1,12 @@
 name:                ghci4luatex
 version:             0.1
 github:              "AliceRixte/ghci4luatex"
-license:             BSD3
+license:             BSD-3-Clause
 author:              "Alice Rixte"
 maintainer:          "alice.rixte@u-bordeaux.fr"
 copyright:           "Alice Rixte 2024"
-
-
-# Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            media
+synopsis:            A GHCi session in LaTeX
+category:            Latex, Program
 
 description:         Please see the README on GitHub at <https://github.com/AliceRixte/pandia/blob/main/ghci4luatex#readme>
 
@@ -49,6 +46,6 @@ tests:
     source-dirs:         test
     dependencies:
     - hspec >= 2.11
-    - QuickCheck
+    - QuickCheck >= 2.14 && < 2.15
     - ghci4luatex
 

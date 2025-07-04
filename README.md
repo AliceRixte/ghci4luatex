@@ -22,7 +22,7 @@ y = 5
 The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 ```
 
-* You can use `HaTeX` :
+* You can use `HaTeX`:
 
 ```latex
 
@@ -32,11 +32,37 @@ The sum of $x$ and $y$ when $x = \hask{x}$ and $y = \hask{y}$ is $\hask{x + y}$.
 
 \begin{ghci}
 import Text.LaTeX
+import Text.LaTeX.Base.Pretty
 
-printTex = putStrLn . prettyLateX
+printTex = putStrLn . prettyLaTeX
 \end{ghci}
 
 \hask{printTex (section "A section using HaTeX")}
+```
+
+* You can use `Diagrams`:
+
+```latex
+\begin{ghci}
+{-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE FlexibleContexts          #-}
+{-# LANGUAGE TypeFamilies              #-}
+
+import Diagrams.Prelude hiding (section)
+import Diagrams.Backend.SVG
+
+myDia = circle 1 # fc green
+\end{ghci}
+
+\begin{ghci}
+  renderSVG "myDia.svg" (dims2D 400 300) myDia
+\end{ghci}
+
+\begin{figure}[h]
+  \centering
+  \includesvg[width=0.2\textwidth]{myDia}
+  \caption{A circle using Diagrams}
+\end{figure}
 ```
 
 * Use any package you need by adding it to `package.yaml` (if the package is on Stackage) or to `stack.yaml` if it is your own package or only on Hackage.

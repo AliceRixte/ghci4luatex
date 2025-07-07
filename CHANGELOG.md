@@ -11,3 +11,6 @@ and this project adheres to the
 * A server that executes GHCi commands and memoizes the results
 * A LuaTeX package that sends commands to that server
 
+# 0.1 - 2025-07-07
+
+* Fix missing test for `cabal install ghci4luatex`

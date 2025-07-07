@@ -1,5 +1,5 @@
 name:                ghci4luatex
-version:             0.0
+version:             0.1
 github:              "AliceRixte/ghci4luatex"
 license:             BSD-3-Clause
 author:              "Alice Rixte"
@@ -30,7 +30,7 @@ dependencies:
 - aeson >= 2.2 && < 2.3
 - text >= 2.1 && < 2.2
 - cmdargs >= 0.10 && < 0.11
-- containers >= 0.6 && < 0.7
+- containers >= 0.6 && < 0.8
 
 ghc-options:
 - -Wall
@@ -55,7 +55,7 @@ tests:
     main:                Spec.hs
     source-dirs:         test
     dependencies:
-    - hspec >= 2.11
-    - QuickCheck >= 2.14 && < 2.15
+    - hspec >= 2.11 && < 2.12
+    - QuickCheck >= 2.14 && < 2.16
     - ghci4luatex
 

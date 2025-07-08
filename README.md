@@ -1,5 +1,7 @@
 # ghci4luatex : a GHCi session in LuaTeX
 
+[![Haskell](https://img.shields.io/badge/language-Haskell-orange.svg)](https://haskell.org) [![BSD3 License](https://img.shields.io/badge/license-BSD3-blue.svg)](https://github.com/AliceRixte/ghci4luatex/LICENSE) [![Hackage](https://img.shields.io/hackage/v/ghci4luatex.svg)](https://hackage.haskell.org/package/ghci4luatex) [![Nightly](https://www.stackage.org/package/ghci4luatex/badge/nightly)](https://www.stackage.org/nightly/package/ghci4luatex) [![LTS](https://www.stackage.org/package/ghci4luatex/badge/lts)](https://www.stackage.org/lts/package/ghci4luatex) 
+
 [![Haskell](https://img.shields.io/badge/language-Haskell-orange.svg)](https://haskell.org) [![Hackage](https://img.shields.io/hackage/v/ghci4luatex.svg)](https://hackage.haskell.org/package/ghci4luatex)  [![BSD3 License](https://img.shields.io/badge/license-BSD3-blue.svg)](https://github.com/AliceRixte/ghci4luatex/LICENSE)
 
 Run a GHCi session within a LaTeX document :

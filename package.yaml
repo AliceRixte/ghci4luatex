@@ -22,13 +22,13 @@ extra-doc-files:
 - doc/ghci-doc.tex
 
 dependencies:
-- base >= 4.18 && < 5
-- process >= 1.6.25 && < 1.7
+- base >= 4.17 && < 5
+- process >= 1.6.18 && < 1.7
 - network-simple >= 0.4 && < 0.5
 - stm >= 2.5 && < 2.6
-- bytestring >= 0.12 && < 0.13
-- aeson >= 2.2 && < 2.3
-- text >= 2.1 && < 2.2
+- bytestring >= 0.11 && < 0.13
+- aeson >= 2.1 && < 2.3
+- text >= 2.0 && < 2.2
 - cmdargs >= 0.10 && < 0.11
 - containers >= 0.6 && < 0.8
 
@@ -55,7 +55,7 @@ tests:
     main:                Spec.hs
     source-dirs:         test
     dependencies:
-    - hspec >= 2.11 && < 2.12
+    - hspec >= 2.10 && < 2.12
     - QuickCheck >= 2.14 && < 2.17
     - ghci4luatex
 

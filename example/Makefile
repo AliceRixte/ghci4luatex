@@ -14,7 +14,7 @@ all: latex
 copy_files:
 	@echo "copying the ghci package to example directory..."
 ifeq ($(OS),Windows_NT)
-	@for %f in ($(ghciPackageFiles)) do $(copy_file) $(ghciPackageDir)\%f . >nul
+	@for %%f in ($(ghciPackageFiles)) do $(copy_file) $(ghciPackageDir)\%%f . >nul
 else
 	$(copy_file) $(foreach file,$(ghciPackageFiles),$(ghciPackageDir)/$(file)) .
 endif

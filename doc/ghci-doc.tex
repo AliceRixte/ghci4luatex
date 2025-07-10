@@ -268,7 +268,8 @@ y = 5
 
   \begin{lstlisting}{language=[AlLaTeX]TeX}
   \begin{ghci}
-  :set -XOverloadedStrings
+  {-# LANGUAGE OverloadedStrings #-}
+  {-# LANGUAGE OverloadedLists #-}
   \end{ghci}
   \end{lstlisting}
 
@@ -280,6 +281,7 @@ y = 5
   :set -XOverloadedLists
   \end{ghci}
   \end{lstlisting}
+
 \end{warningbox}
 
 

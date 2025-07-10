@@ -18,3 +18,8 @@ and this project adheres to the
 ## 0.1.1 - 2025-07-10
 
 * Bump Quickcheck version for stackage upload
+
+## 0.1.2 - 2025-07-10
+
+* Windows compatibility
+* Loosen lower bounds

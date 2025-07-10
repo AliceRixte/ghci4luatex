@@ -1,5 +1,5 @@
 name:                ghci4luatex
-version:             0.1
+version:             0.1.1
 github:              "AliceRixte/ghci4luatex"
 license:             BSD-3-Clause
 author:              "Alice Rixte"
@@ -56,6 +56,6 @@ tests:
     source-dirs:         test
     dependencies:
     - hspec >= 2.11 && < 2.12
-    - QuickCheck >= 2.14 && < 2.16
+    - QuickCheck >= 2.14 && < 2.17
     - ghci4luatex
 

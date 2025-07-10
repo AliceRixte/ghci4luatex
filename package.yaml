@@ -8,7 +8,7 @@ copyright:           "Copyright (C) 2025 Alice Rixte"
 synopsis:            A GHCi session in LaTeX
 category:            Latex, Program
 
-description:         Please see the README on GitHub at <https://github.com/AliceRixte/pandia/blob/main/ghci4luatex#readme>
+description:         Please see the README on GitHub at <https://github.com/AliceRixte/ghci4luatex#readme>
 
 extra-source-files:
 - README.md
